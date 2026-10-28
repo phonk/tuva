@@ -6,6 +6,8 @@ Tuva puts the FS1R's real idea back in front of you: it is a throat. Instead of 
 
 **Use it here:** https://phonk.github.io/tuva/
 
+**Beta testers:** start with the [beta guide](docs/GUIDE.md): connecting the FS1R, what each page does, and what to report.
+
 ![The mouth: a vowel plane you drag to sing](docs/mouth.png)
 
 ## What's inside
