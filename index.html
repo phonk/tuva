@@ -172,6 +172,7 @@ canvas{display:block;width:100%}
 .phrase .cl{text-transform:none}
 #phCtl{grid-template-columns:repeat(2,minmax(0,1fr))}
 #phRec[aria-pressed=true]{background:var(--red);border-color:var(--red);color:#fff}
+#prevBtn[aria-pressed=false]{color:var(--muted);border-style:dashed}
 #singBtn[aria-pressed=true]{background:var(--panel);border-color:var(--red);color:var(--ink)}
 .choirbar{display:grid;gap:10px}
 .opcard{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px 16px;align-items:center;border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:10px 0}
@@ -253,6 +254,8 @@ canvas{display:block;width:100%}
 .jk[aria-pressed="true"] .led,.jk[data-on="1"] .led{background:var(--k);box-shadow:0 0 8px var(--k),0 0 2px var(--k)}
 .jv{min-height:56px;font-size:15px;letter-spacing:0;text-transform:none;flex-direction:column;gap:7px}
 .j-util{display:grid;grid-template-columns:auto auto auto minmax(0,1fr) auto;gap:8px;align-items:center}
+#jSound,#jStop{grid-column:span 1}
+.j-util #jSound{grid-column:1/3}.j-util #jStop{grid-column:3/4}
 .j-util output{font-size:12px;font-weight:700;color:var(--j-white);min-width:3ch;text-align:center}
 #jScale{justify-content:space-between;min-width:0}
 #jScale b{color:var(--j-white);font-weight:700;letter-spacing:.04em;overflow:hidden;text-overflow:ellipsis}
@@ -282,7 +285,9 @@ nav.tabs button,.toolbar>button,.toolbar label,.ctl label,h2,h3,.cl,.legend,.kbd
     <span class="vname" id="hdrName">          </span>
     <div class="ctl"><label for="partSel">Part</label><select id="partSel"><option value="0">1</option><option value="1">2</option><option value="2">3</option><option value="3">4</option></select></div>
     <div class="ctl"><label for="noteSel">Note</label><select id="noteSel"></select></div>
-    <button id="playBtn" class="power" title="Hold to hear the preview (keys A–K on your keyboard)">Play</button>
+    <button id="playBtn" class="power" title="Hold to play the note: on the FS1R when MIDI is connected, and in the browser when browser sound is on (keys A–K on your keyboard)">Play</button>
+    <button id="prevBtn" data-preview aria-pressed="true" title="Turn the browser preview sound on or off">browser sound on</button>
+    <button id="panicBtn" title="Stop every sound, in the browser and on the FS1R (Esc)">stop</button>
     <div class="spacer"></div>
     <button id="kidsBtn" title="A simpler mode to just play">jam mode</button>
     <button id="undoBtn" title="Undo (Ctrl+Z)">Undo</button>
@@ -432,6 +437,7 @@ nav.tabs button,.toolbar>button,.toolbar label,.ctl label,h2,h3,.cl,.legend,.kbd
       <span class="ctl"><label for="midiOut">Output</label><select id="midiOut"><option value="">—</option></select></span>
       <span class="ctl"><label for="midiIn">Input</label><select id="midiIn"><option value="">—</option></select></span>
       <span class="ctl"><label for="devNum">Device</label><select id="devNum"></select></span>
+      <span class="ctl"><label for="noteCh">Notes on</label><select id="noteCh"></select></span>
       <label class="ctl"><input type="checkbox" id="liveSend" checked> Send parameters in real time</label>
     </div>
     <div class="toolbar">
@@ -466,6 +472,8 @@ nav.tabs button,.toolbar>button,.toolbar label,.ctl label,h2,h3,.cl,.legend,.kbd
           <button class="jk" id="jOctD" aria-label="octave down">oct −</button><output id="jOct">0</output><button class="jk" id="jOctU" aria-label="octave up">oct +</button>
           <button class="jk" id="jScale" style="--k:var(--j-white)" aria-label="change scale">scale <b>minor pent</b></button>
           <button class="jk" id="jLink" style="--k:var(--j-lime)" aria-pressed="false"><span class="led"></span>link</button>
+          <button class="jk" id="jSound" data-preview style="--k:var(--j-cyan)" aria-pressed="true" title="browser sound on or off"><span class="led"></span>sound</button>
+          <button class="jk" id="jStop" style="--k:var(--j-red)" title="stop every sound (Esc)"><span class="led"></span>stop</button>
         </div>
       </div>
     </div>
@@ -758,18 +766,37 @@ function midiStatus(t,err){const s=$('#midiStatus');s.textContent=t;s.className=
 async function connectMIDI(){
   if(!navigator.requestMIDIAccess){showMidiHelp();midiStatus('This browser does not support Web MIDI.',true);return}
   try{M.access=await navigator.requestMIDIAccess({sysex:true})}catch(e){showMidiHelp();midiStatus('MIDI access denied or blocked ('+(e&&e.name||'error')+').',true);return}
-  M.access.onstatechange=fillPorts;fillPorts();midiStatus('MIDI active. Choose the output and input connected to the FS1R.');
+  midiStatus('MIDI active. Choose the output connected to the FS1R; Tuva listens on every input.');M.access.onstatechange=fillPorts;fillPorts();
 }
 function fillPorts(){const o=$('#midiOut'),i=$('#midiIn'),ov=o.value,iv=i.value;
   o.replaceChildren(el('option',{value:'',text:'—'}),...[...M.access.outputs.values()].map(p=>el('option',{value:p.id,text:p.name})));
   i.replaceChildren(el('option',{value:'',text:'—'}),...[...M.access.inputs.values()].map(p=>el('option',{value:p.id,text:p.name})));
-  const pick=(sel,prev)=>{if(prev&&[...sel.options].some(x=>x.value===prev))sel.value=prev;else{const g=[...sel.options].find(x=>/fs1r|yamaha|midi/i.test(x.textContent));if(g)sel.value=g.value}};
+  const pick=(sel,prev)=>{const real=[...sel.options].filter(x=>x.value&&!/through|iac|virtual/i.test(x.textContent));if(prev&&[...sel.options].some(x=>x.value===prev))sel.value=prev;else{const g=real.find(x=>/fs1r|yamaha/i.test(x.textContent))||(real.length===1?real[0]:null);if(g)sel.value=g.value}};
   pick(o,ov);pick(i,iv);bindPorts()}
-function bindPorts(){if(!M.access)return;M.out=M.access.outputs.get($('#midiOut').value)||null;
-  if(M.in)M.in.onmidimessage=null;M.in=M.access.inputs.get($('#midiIn').value)||null;if(M.in)M.in.onmidimessage=onMidi;
+/* Every input is heard: interfaces often number their in and out ports differently (an ESI MUEx answers on
+   "Port 15" to a request sent on "Port 16"), so an FS1R dump is taken from whichever input it arrives on. */
+function bindPorts(){if(!M.access)return;const hadOut=!!M.out;M.out=M.access.outputs.get($('#midiOut').value)||null;
+  M.in=M.access.inputs.get($('#midiIn').value)||null;for(const inp of M.access.inputs.values())inp.onmidimessage=ev=>onMidiFrom(inp,ev);
+  if(M.out&&!hadOut&&SOUND.preview==null){setPreview(false,true);midiStatus('Connected. Browser sound is off so you hear only the FS1R; turn it back on in the top bar if you want the preview too.')}
+  if(typeof syncUtil==='function'&&S.kids)syncUtil();
   const p=$('#midiPill');p.textContent=M.out?'MIDI: '+M.out.name:'MIDI disconnected';p.classList.toggle('on',!!M.out)}
-function onMidi(ev){const d=ev.data;if(d[0]!==0xF0)return;for(const m of splitSysex(d)){const c=classify(m);logMsg('←',m,c.kind);
-  if(c.kind==='voice'){if(!c.ok)midiStatus('Voice received with a bad checksum: loaded anyway, please check it.',true);snapshot();H.last=0;S.voice=new Voice(c.data);refresh();midiStatus('Voice received: '+S.voice.name)}
+M.buf=new Map();M.reqUntil=0;M.reqTimer=0;
+function onMidiFrom(port,ev){const d=ev.data;if(!d||!d.length)return;if(d.length===1&&d[0]>=0xF8)return;
+  let b=M.buf.get(port.id);if(d[0]===0xF0)b=[];else if(!b)return;else if(d[0]>=0x80&&d[0]!==0xF7){M.buf.delete(port.id);return}
+  for(const x of d)b.push(x);const end=b.lastIndexOf(0xF7);
+  if(end<0){if(b.length>60000)M.buf.delete(port.id);else M.buf.set(port.id,b);return}
+  M.buf.delete(port.id);handleSysex(Uint8Array.from(b.slice(0,end+1)),port)}
+function handleSysex(bytes,port){const selected=M.in&&port&&port.id===M.in.id;
+  for(const m of splitSysex(bytes)){const c=classify(m);if(c.kind==='other')continue;
+    if(!selected){if(c.kind!=='voice'&&c.kind!=='fseq')continue;
+      if(M.in&&M.reqUntil<performance.now())continue;
+      M.in=port;$('#midiIn').value=port.id;midiStatus('The FS1R answered on '+port.name+': input set to it.')}
+    if(c.kind==='voice'&&Array.from(c.data).every((x,i)=>x===S.voice.b[i])){logMsg('←',m,'voice (same as Tuva: echo)');M.reqUntil=0;clearTimeout(M.reqTimer);continue}
+    onMidi({data:m},port)}}
+function midiRequest(addr,label){sendRaw(buildRequest(S.dev,...addr),label);if(!M.out)return;M.reqUntil=performance.now()+3000;clearTimeout(M.reqTimer);midiStatus('Request sent, waiting for the FS1R…');
+  M.reqTimer=setTimeout(()=>{M.reqUntil=0;const n=M.access?M.access.inputs.size:0;midiStatus('No answer from the FS1R after 3 s (Tuva listened on all '+n+' MIDI inputs). Check: FS1R MIDI Out → interface MIDI In; on the FS1R, UTILITY › MIDI › Rcv SysExcl on and Device Num '+(S.dev+1)+' or all.',true)},3000)}
+function onMidi(ev,port){const d=ev.data;if(d[0]!==0xF0)return;for(const m of splitSysex(d)){const c=classify(m);logMsg('←',m,c.kind+(port?' · '+port.name:''));if(c.kind==='voice'||c.kind==='fseq'){M.reqUntil=0;clearTimeout(M.reqTimer)}
+  if(c.kind==='voice'){if(!c.ok)midiStatus('Voice received with a bad checksum: loaded anyway, please check it.',true);snapshot();H.last=0;S.voice=new Voice(c.data);refresh();midiStatus('Voice received: '+S.voice.name.trim()+(port?' (from '+port.name+')':''))}
   else if(c.kind==='fseq'){S.fseq=new Fseq(c.data);buildFseqHead();refresh();midiStatus('Fseq received: '+S.fseq.name)}
   else if(c.kind==='param'){if(c.ah===0x40+S.part&&c.am===0&&c.al<112){S.voice.b[c.al]=c.val&127;refresh()}else if(c.ah===0x60+S.part&&c.am<8&&c.al<62){S.voice.b[112+c.am*62+c.al]=c.val&127;refresh()}}}}
 function showMidiHelp(){const h=$('#midiHelp');h.hidden=false;
@@ -780,7 +807,7 @@ function showMidiHelp(){const h=$('#midiHelp');h.hidden=false;
 
 /* ---------- audio preview (approssimata, Web Audio) ---------- */
 const AU={ctx:null};
-function audio(){if(!AU.ctx){const ctx=new (window.AudioContext||window.webkitAudioContext)();AU.ctx=ctx;AU.comp=ctx.createDynamicsCompressor();AU.out=ctx.createGain();AU.out.gain.value=0.5;AU.comp.connect(AU.out).connect(ctx.destination);
+function audio(){if(!AU.ctx){const ctx=new (window.AudioContext||window.webkitAudioContext)();AU.ctx=ctx;AU.comp=ctx.createDynamicsCompressor();AU.out=ctx.createGain();AU.out.gain.value=SOUND.on?0.5:0;AU.comp.connect(AU.out).connect(ctx.destination);
   const nb=ctx.createBuffer(1,ctx.sampleRate*2,ctx.sampleRate),d=nb.getChannelData(0);for(let i=0;i<d.length;i++)d[i]=Math.random()*2-1;AU.noiseBuf=nb}
   if(AU.ctx.state!=='running')AU.ctx.resume();return AU.ctx}
 const egSec=t=>t<=0?0.002:0.0015*Math.pow(2,t/7.5);
@@ -800,10 +827,10 @@ function noteOn(note){const ctx=audio(),v=S.voice,t=ctx.currentTime+0.01,f0=mtof
     else{const os=ctx.createOscillator();os.type=form===0?'sine':(form<=2?'sawtooth':'square');os.frequency.value=hz;os.detune.value=(v.get(V.detune,o)-15)*2;srcs.push(os);os.connect(g);env(g,V,o,lvl*(form?0.35:0.6))}
     g.connect(filt)}
   for(let o=0;o<8;o++){const tl=v.get(N.tl,o);if(!tl)continue;const hz=v.get(N.mode,o)===0?nHz(v,o):nHz(v,o)*f0/261.6;if(hz>ctx.sampleRate/2)continue;const bp=ctx.createBiquadFilter(),g=ctx.createGain();bp.type='bandpass';bp.frequency.value=hz;bp.Q.value=qFromOct(bwOct(v.get(N.bw,o)))*(1+v.get(N.res,o)*0.5);noise.connect(bp).connect(g);env(g,N,o,lvGain(tl)*2.5);g.connect(filt)}
-  if(v.get(C.l1p,0)>0){const lfo=ctx.createOscillator(),lg=ctx.createGain();lfo.frequency.value=0.1+v.get(C.l1s)/99*12;lg.gain.value=v.get(C.l1p)*1.2;lfo.connect(lg);lg.connect(saw.detune);lfo.start(t+egSec(v.get(C.l1d))*0.3);srcs.push(lfo)}
-  srcs.forEach(s=>s.start(t));voiceNodes={srcs,gains,filt}}
+  if(v.get(C.l1p,0)>0){const lfo=ctx.createOscillator(),lg=ctx.createGain();lfo.frequency.value=0.1+v.get(C.l1s)/99*12;lg.gain.value=v.get(C.l1p)*1.2;lfo.connect(lg);lg.connect(saw.detune);srcs.forEach(s=>s.start(t));lfo.start(t+egSec(v.get(C.l1d))*0.3);srcs.push(lfo)}
+  else srcs.forEach(s=>s.start(t));voiceNodes={srcs,gains,filt}}
 function noteOff(now){if(!voiceNodes)return;const ctx=AU.ctx,t=ctx.currentTime,n=voiceNodes;voiceNodes=null;let mx=0;
-  for(const {g,rel,end} of n.gains){g.gain.cancelScheduledValues(t);g.gain.setValueAtTime(g.gain.value,t);const r=now?0.02:rel;g.gain.linearRampToValueAtTime(end,t+r);mx=Math.max(mx,r)}
+  for(const {g,rel,end} of n.gains){g.gain.cancelScheduledValues(t);g.gain.setValueAtTime(g.gain.value,t);const r=now?0.02:Math.min(rel,2);g.gain.linearRampToValueAtTime(end,t+r);mx=Math.max(mx,r)}
   n.srcs.forEach(s=>{try{s.stop(t+mx+0.05)}catch(e){}});setTimeout(()=>n.filt.disconnect(),(mx+0.2)*1000)}
 
 /* ---------- tabs ---------- */
@@ -1044,20 +1071,20 @@ $('#exampleBtn').onclick=()=>replaceVoice(exampleVoice());
 /* ---------- header controls ---------- */
 const noteSel=$('#noteSel');for(let n=24;n<=96;n++)noteSel.append(el('option',{value:n,text:noteName(n)}));noteSel.value=S.note;noteSel.onchange=()=>{S.note=+noteSel.value;refresh()};
 $('#partSel').onchange=e=>{S.part=+e.target.value};
-const playBtn=$('#playBtn');playBtn.addEventListener('pointerdown',e=>{noteOn(S.note);playBtn.setPointerCapture(e.pointerId)});['pointerup','pointercancel'].forEach(ev=>playBtn.addEventListener(ev,()=>noteOff()));
-playBtn.addEventListener('keydown',e=>{if((e.key===' '||e.key==='Enter')&&!e.repeat){e.preventDefault();noteOn(S.note)}});playBtn.addEventListener('keyup',e=>{if(e.key===' '||e.key==='Enter')noteOff()});
+const playBtn=$('#playBtn');playBtn.addEventListener('pointerdown',e=>{playDown(S.note);playBtn.setPointerCapture(e.pointerId)});['pointerup','pointercancel','lostpointercapture'].forEach(ev=>playBtn.addEventListener(ev,()=>playUp()));
+playBtn.addEventListener('keydown',e=>{if((e.key===' '||e.key==='Enter')&&!e.repeat){e.preventDefault();playDown(S.note)}});playBtn.addEventListener('keyup',e=>{if(e.key===' '||e.key==='Enter')playUp()});
 $('#undoBtn').onclick=undo;$('#redoBtn').onclick=redo;
 const KEYMAP='awsedftgyhujk';const held=new Set();
 addEventListener('keydown',e=>{const tg=e.target.tagName;if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='z'){if(tg==='INPUT'&&e.target.type==='text')return;e.preventDefault();e.shiftKey?redo():undo();return}
-  if(tg==='INPUT'||tg==='SELECT'||tg==='TEXTAREA'||e.ctrlKey||e.metaKey||e.altKey||e.repeat)return;if(S.kids)return;const i=KEYMAP.indexOf(e.key.toLowerCase());if(i<0)return;held.add(e.key.toLowerCase());noteOn(Math.floor(S.note/12)*12+i)});
-addEventListener('keyup',e=>{if(held.delete(e.key.toLowerCase())&&!held.size)noteOff()});
+  if(tg==='INPUT'||tg==='SELECT'||tg==='TEXTAREA'||e.ctrlKey||e.metaKey||e.altKey||e.repeat)return;if(S.kids)return;const i=KEYMAP.indexOf(e.key.toLowerCase());if(i<0)return;held.add(e.key.toLowerCase());playDown(Math.floor(S.note/12)*12+i)});
+addEventListener('keyup',e=>{if(held.delete(e.key.toLowerCase())&&!held.size)playUp()});
 
 /* MIDI tab wiring */
 const devSel=$('#devNum');for(let i=0;i<16;i++)devSel.append(el('option',{value:i,text:i+1}));devSel.onchange=()=>{S.dev=+devSel.value};
 $('#midiConnect').onclick=connectMIDI;$('#midiOut').onchange=bindPorts;$('#midiIn').onchange=bindPorts;$('#liveSend').onchange=e=>{S.live=e.target.checked};
-$('#reqVoice').onclick=()=>sendRaw(buildRequest(S.dev,0x40+S.part,0,0),'Voice request, part '+(S.part+1));
+$('#reqVoice').onclick=()=>midiRequest([0x40+S.part,0,0],'Voice request, part '+(S.part+1));
 $('#sendVoice').onclick=()=>sendVoice(false);
-$('#reqFseq').onclick=()=>sendRaw(buildRequest(S.dev,0x60,0,0),'Fseq request (edit buffer)');
+$('#reqFseq').onclick=()=>midiRequest([0x60,0,0],'Fseq request (edit buffer)');
 /* An Fseq only plays when the performance points a part at it, with play mode "fseq", a speed ratio,
    a neutral level-velocity setting and its own loop points (the performance's, not the header's). */
 function fseqPerfSetup(f,part,slot){const P=[[0x15,part+1,'Fseq part'],[0x18,1000,'Fseq speed ratio 100%'],[0x1A,0,'Fseq start offset'],[0x1C,f.get14(0x10),'Fseq loop start'],[0x1E,f.get14(0x12),'Fseq loop end'],
@@ -1298,7 +1325,7 @@ function drawMorph(){const cv=MP.cv;if(S.tab!=='morph'||!cv.width)return;const g
   if(MP.down){const gr=g.createRadialGradient(px,py,0,px,py,46*dpr);gr.addColorStop(0,'rgba(228,59,34,.55)');gr.addColorStop(1,'rgba(228,59,34,0)');g.fillStyle=gr;g.beginPath();g.arc(px,py,46*dpr,0,7);g.fill()}
   g.beginPath();g.arc(px,py,9*dpr,0,7);g.fillStyle=red;g.fill();g.lineWidth=2*dpr;g.strokeStyle=css('--ink');g.stroke();g.textAlign='left';g.textBaseline='top'}
 /* notes: the preview always; the FS1R too when asked */
-function hwNote(n){const ch=+$('#mpChan').value;if(MP.hwNote!=null){sendRaw(Uint8Array.from([0x80|ch,MP.hwNote,0]),'note off '+noteName(MP.hwNote));MP.hwNote=null}
+function hwNote(n){const ch=noteCh();if(MP.hwNote!=null){sendRaw(Uint8Array.from([0x80|ch,MP.hwNote,0]),'note off '+noteName(MP.hwNote));MP.hwNote=null}
   if(n!=null&&($('#mpHw').checked||(S.kids&&M.out))){sendRaw(Uint8Array.from([0x90|ch,n,100]),'note on '+noteName(n));MP.hwNote=n}}
 function voiceOn(n){MO.liveNote=n;if(!MO.live)startSing();else updateMouthLive();singUI();if(MP.hwNote!==n)hwNote(n)}
 function voiceOffIfIdle(){if(MP.down||MP.keys.size||JAM.holds.size)return;stopSing();singUI();hwNote(null);MO.liveNote=null}
@@ -1532,6 +1559,32 @@ function setKids(on){S.kids=on;document.body.classList.toggle('k-hide-adult',on)
   else{if(JAM.playing)seqStop();JAM.holds.clear();voiceOffIfIdle();requestAnimationFrame(()=>{sizeCanvases();refresh()})}}
 buildEncs();buildVowels();
 $('#kidsBtn').onclick=()=>setKids(true);$('#kExit').onclick=()=>setKids(false);
+
+/* ---------- sound routing: browser preview, notes to the FS1R, stop ---------- */
+/* Reported by the first hardware tester: the preview could not be silenced and a held note could keep sounding.
+   The browser sound now has its own switch (off by default once an FS1R is connected), Play and the computer keys
+   send note on/off to the FS1R, stop/Esc silences everything, and leaving the window releases whatever is held. */
+const SOUND={preview:store.get('fs1r-preview',null),on:true};
+function setPreview(on,auto){SOUND.on=on;if(!auto){SOUND.preview=on;store.set('fs1r-preview',on)}if(AU.out)AU.out.gain.setTargetAtTime(on?0.5:0,AU.ctx.currentTime,0.02);
+  for(const b of document.querySelectorAll('[data-preview]')){b.setAttribute('aria-pressed',String(on));if(b.id==='prevBtn')b.textContent=on?'browser sound on':'browser sound off'}}
+const noteCh=()=>+$('#noteCh').value;
+let topNote=null;
+function midiNote(n,on){if(!M.out)return;const ch=noteCh();sendRaw(Uint8Array.from(on?[0x90|ch,n,100]:[0x80|ch,n,0]),(on?'note on ':'note off ')+noteName(n)+' · ch '+(ch+1))}
+function playDown(n){if(topNote!=null)midiNote(topNote,false);topNote=n;midiNote(n,true);noteOn(n)}
+function playUp(){if(topNote!=null){midiNote(topNote,false);topNote=null}noteOff()}
+function panic(){held.clear();topNote=null;noteOff(true);MP.down=false;MP.keys.clear();jHeld.clear();JAM.holds.clear();if(JAM.playing)seqStop();if(FS.play)stopFseq();stopSing();singUI();MO.liveNote=null;MP.hwNote=null;
+  if(GEST.on)stopGesture();document.querySelectorAll('#jPiano [data-on="1"],#mpKeys [data-on="1"],#jVowels [data-on="1"]').forEach(b=>b.dataset.on='0');
+  if(M.out){for(let ch=0;ch<16;ch++){try{M.out.send(Uint8Array.from([0xB0|ch,120,0]));M.out.send(Uint8Array.from([0xB0|ch,123,0]))}catch(e){}}logMsg('→',Uint8Array.from([0xB0,123,0]),'all sound off + all notes off, 16 channels')}}
+function releaseHeld(){if(held.size||topNote!=null){held.clear();playUp()}MP.down=false;MP.keys.clear();for(const [,n] of jHeld)keyUp(n);jHeld.clear();
+  for(const h of [...JAM.holds])if(h!=='seq')JAM.holds.delete(h);document.querySelectorAll('#jPiano [data-on="1"],#mpKeys [data-on="1"],#jVowels [data-on="1"]').forEach(b=>b.dataset.on='0');voiceOffIfIdle()}
+addEventListener('blur',releaseHeld);document.addEventListener('visibilitychange',()=>{if(document.hidden)releaseHeld()});
+addEventListener('keydown',e=>{if(e.key==='Escape'){panic()}});
+for(let c=0;c<16;c++)$('#noteCh').append(el('option',{value:c,text:'ch '+(c+1)}));$('#noteCh').value=store.get('fs1r-notech',0);
+const syncCh=v=>{$('#noteCh').value=v;$('#mpChan').value=v;store.set('fs1r-notech',+v)};syncCh($('#noteCh').value);
+$('#noteCh').onchange=e=>syncCh(e.target.value);$('#mpChan').onchange=e=>syncCh(e.target.value);
+$('#prevBtn').onclick=()=>setPreview(!SOUND.on);$('#jSound').onclick=()=>setPreview(!SOUND.on);
+$('#panicBtn').onclick=panic;$('#jStop').onclick=panic;
+setPreview(SOUND.preview!==false,true);
 
 /* ---------- boot ---------- */
 buildChips($('#opChips'));buildChips($('#opChips2'));buildInspector();buildEGs();buildCommon();buildFseqTracks();buildFseqHead();
