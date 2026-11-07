@@ -20,7 +20,7 @@ Tuva puts the FS1R's real idea back in front of you: it is a throat. Instead of 
 | **Morph** | Four mouths in the corners of a pad; slide between them while playing a keyboard in scale. |
 | **Spectrum, Envelopes, Voice, Fseq** | Every voice parameter, drawn: formants as hills you can drag, envelopes as points, the Fseq as a timeline you can draw on or build from an audio file. |
 | **Library, MIDI** | Import and export `.syx` (voices, banks, Fseqs), save to a library in the browser, send and request dumps, a live SysEx log. |
-| **Jam mode** | A simpler, self-contained instrument: four pages (sing, shape, a 16-step vowel sequencer, talk), four encoders whose job follows the page, a two-octave keyboard. |
+| **Jam mode** | A self-contained instrument for the whole synth: perform pages (sing, a 16-step vowel sequencer, talk) and sound pages (voices, wiring, shape, envelopes, filter, LFOs), four encoders whose job follows the page, shift, rand and lock, a two-octave keyboard. |
 
 ![Choir](docs/choir.png)
 ![Jam mode](docs/jam.png)

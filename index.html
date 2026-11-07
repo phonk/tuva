@@ -203,7 +203,7 @@ canvas{display:block;width:100%}
 /* jam mode: a pocket formant instrument. Graphite body in relief, recessed screen, keys that travel.
    Neon only marks what is on: an LED, the outline of a pressed key, a ring on an encoder. */
 #kids{--j-bg:#07070a;--j-body1:#2a2a31;--j-body2:#18181d;--j-line:#34343d;--j-txt:#d8dae3;--j-dim:#80838f;--j-faint:#4a4c56;
-  --j-cyan:#36d6ff;--j-lime:#a8ff3e;--j-white:#eef0f6;--j-orange:#ff7a1a;--j-violet:#b48cff;--j-red:#ff3355;
+  --j-cyan:#36d6ff;--j-lime:#a8ff3e;--j-white:#eef0f6;--j-orange:#ff7a1a;--j-violet:#b48cff;--j-red:#ff3355;--j-amber:#ffb020;
   --j-font:"JetBrains Mono","IBM Plex Mono",ui-monospace,Menlo,monospace;
   min-height:100vh;min-height:100dvh;background:radial-gradient(1400px 800px at 50% -20%,#1d1d27 0,var(--j-bg) 62%);color:var(--j-txt);font-family:var(--j-font);color-scheme:dark;
   padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:14px 32px;display:flex;flex-direction:column;align-items:center;gap:12px}
@@ -228,7 +228,8 @@ canvas{display:block;width:100%}
 #jamScreen:focus-visible{box-shadow:0 0 0 1px var(--j-cyan)}
 .k-screen::after{content:"";position:absolute;inset:7px;border-radius:8px;pointer-events:none;background:repeating-linear-gradient(180deg,rgba(255,255,255,.022) 0 1px,transparent 1px 3px)}
 .j-ctx{display:flex;flex-wrap:wrap;gap:8px;align-items:center;min-height:46px}
-.j-ctx .jk{min-width:60px}
+.j-ctx .jk{min-width:56px}
+.j-ctx .jk.sm{min-width:44px;padding:0 8px}
 .j-hint{margin-left:auto}
 #jWord{flex:1 1 220px;height:46px;border-radius:9px;border:1px solid #000;background:#020205;color:var(--j-lime);font-family:var(--j-font);font-size:16px;font-weight:600;letter-spacing:.06em;padding:0 14px;min-width:0;box-shadow:inset 0 2px 8px rgba(0,0,0,.9)}
 #jWord:focus-visible{outline:1px solid var(--j-lime);outline-offset:2px}
@@ -243,7 +244,13 @@ canvas{display:block;width:100%}
 .k-dial:focus-visible{box-shadow:0 0 0 2px var(--j-white),0 9px 14px rgba(0,0,0,.65)}
 .k-val{font-size:11px;font-weight:600;color:var(--j-white);font-variant-numeric:tabular-nums;white-space:nowrap}
 .j-group{display:grid;gap:7px}
-.j-modes{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
+.j-modes{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.j-pages{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,2fr);gap:10px}
+.j-pages .j-modes.sound{grid-template-columns:repeat(2,minmax(0,1fr))}
+.j-pages .j-modes.perform{grid-template-columns:1fr}
+.j-modes .jk{padding:0 6px;gap:6px;letter-spacing:.1em}
+.j-util5{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px}
+.j-util5 .jk{padding:0 4px;gap:6px;letter-spacing:.1em}
 .j-vowels{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px}
 .jk{position:relative;min-height:44px;border-radius:9px;border:1px solid #0b0b0f;background:linear-gradient(180deg,#2e2e36,#1c1c22);box-shadow:0 5px 0 #0a0a0d,0 9px 14px rgba(0,0,0,.55),inset 0 1px 0 rgba(255,255,255,.09);
   font-size:10.5px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--j-dim)!important;display:flex;align-items:center;justify-content:center;gap:8px;padding:0 10px;transition:transform .05s,box-shadow .05s;touch-action:manipulation;white-space:nowrap}
@@ -254,8 +261,6 @@ canvas{display:block;width:100%}
 .jk[aria-pressed="true"] .led,.jk[data-on="1"] .led{background:var(--k);box-shadow:0 0 8px var(--k),0 0 2px var(--k)}
 .jv{min-height:56px;font-size:15px;letter-spacing:0;text-transform:none;flex-direction:column;gap:7px}
 .j-util{display:grid;grid-template-columns:auto auto auto minmax(0,1fr) auto;gap:8px;align-items:center}
-#jSound,#jStop{grid-column:span 1}
-.j-util #jSound{grid-column:1/3}.j-util #jStop{grid-column:3/4}
 .j-util output{font-size:12px;font-weight:700;color:var(--j-white);min-width:3ch;text-align:center}
 #jScale{justify-content:space-between;min-width:0}
 #jScale b{color:var(--j-white);font-weight:700;letter-spacing:.04em;overflow:hidden;text-overflow:ellipsis}
@@ -269,7 +274,7 @@ canvas{display:block;width:100%}
 .pw[data-on="1"],.pb[data-on="1"]{transform:translateY(4px);box-shadow:0 2px 0 #0a0a0d,0 0 0 1px var(--k),0 0 16px color-mix(in srgb,var(--k) 40%,transparent)}
 .pw[data-on="1"] i,.pb[data-on="1"] i{background:var(--k);box-shadow:0 0 8px var(--k)}
 .pw span{color:var(--j-dim)}
-@media (max-width:560px){.k-device{padding:12px;border-radius:18px}.j-encs{padding:10px 4px}.j-piano{height:124px}.j-grille{display:none}.j-util{grid-template-columns:auto auto auto minmax(0,1fr)}.j-util #jLink{grid-column:1/-1}}
+@media (max-width:560px){.k-device{padding:12px;border-radius:18px}.j-encs{padding:10px 4px}.j-piano{height:124px}.j-grille{display:none}.j-util5 .jk,.j-modes .jk{font-size:9.5px;letter-spacing:.06em;gap:4px}.j-util5,.j-modes,.j-pages{gap:6px}.j-ctx .jk{min-width:48px;padding:0 8px}}
 @media (prefers-reduced-motion:reduce){.jk,.pw,.pb{transition:none}}
 .credits{padding-block:14px calc(28px + env(safe-area-inset-bottom,0px));border-top:1px solid var(--line);color:var(--muted);font-size:11.5px}
 /* lowercase voice, as on the phonkless pages */
@@ -466,14 +471,19 @@ nav.tabs button,.toolbar>button,.toolbar label,.ctl label,h2,h3,.cl,.legend,.kbd
       </div>
       <div class="j-right">
         <div class="j-encs" id="jEncs"></div>
-        <div class="j-group"><span class="k-label">page</span><div class="j-modes" id="jModes"></div></div>
+        <div class="j-pages" id="jModes"><div class="j-group"><span class="k-label">perform</span><div class="j-modes perform" id="jPerform"></div></div><div class="j-group"><span class="k-label">sound</span><div class="j-modes sound" id="jSoundPages"></div></div></div>
         <div class="j-group"><span class="k-label">vowel</span><div class="j-vowels" id="jVowels"></div></div>
+        <div class="j-util5">
+          <button class="jk" id="jShift" style="--k:var(--j-white)" aria-pressed="false" title="tap to latch, hold for a moment: the knobs turn over"><span class="led"></span>shift</button>
+          <button class="jk" id="jRand" style="--k:var(--j-violet)" title="roll this page; with shift: undo"><span class="led"></span>rand</button>
+          <button class="jk" id="jLock" style="--k:var(--j-amber)" aria-pressed="false" title="keep the last note sounding"><span class="led"></span>lock</button>
+          <button class="jk" id="jLink" style="--k:var(--j-lime)" aria-pressed="false"><span class="led"></span>link</button>
+          <button class="jk" id="jStop" style="--k:var(--j-red)" title="stop every sound (Esc)"><span class="led"></span>stop</button>
+        </div>
         <div class="j-util">
           <button class="jk" id="jOctD" aria-label="octave down">oct −</button><output id="jOct">0</output><button class="jk" id="jOctU" aria-label="octave up">oct +</button>
           <button class="jk" id="jScale" style="--k:var(--j-white)" aria-label="change scale">scale <b>minor pent</b></button>
-          <button class="jk" id="jLink" style="--k:var(--j-lime)" aria-pressed="false"><span class="led"></span>link</button>
           <button class="jk" id="jSound" data-preview style="--k:var(--j-cyan)" aria-pressed="true" title="browser sound on or off"><span class="led"></span>sound</button>
-          <button class="jk" id="jStop" style="--k:var(--j-red)" title="stop every sound (Esc)"><span class="led"></span>stop</button>
         </div>
       </div>
     </div>
@@ -816,7 +826,10 @@ const qFromOct=o=>{const x=Math.pow(2,o);return Math.sqrt(x)/(x-1)};
 function filterNode(ctx,v){const f=ctx.createBiquadFilter();const t=v.get(C.fType);f.type=['lowpass','lowpass','lowpass','highpass','bandpass','notch'][t];f.frequency.value=20*Math.pow(2,v.get(C.fCut)/127*10);f.Q.value=0.6+Math.max(0,v.get(C.fRes)-16)*0.12;return f}
 let voiceNodes=null;
 function noteOn(note){const ctx=audio(),v=S.voice,t=ctx.currentTime+0.01,f0=mtof(note+v.get(C.shift)-24);noteOff(true);
-  const filt=filterNode(ctx,v);filt.connect(AU.comp);const srcs=[],gains=[];
+  const filt=filterNode(ctx,v),trem=ctx.createGain();filt.connect(trem).connect(AU.comp);const srcs=[],gains=[],oscs=[];let fEnv=null;
+  const kt=keyTrack(v,note),fc=filt.frequency.value*kt;filt.frequency.value=clamp(fc,20,20000);
+  if(v.get(C.fEgD)!==64){const amt=(v.get(C.fEgD)-64)/63*5,F=k=>clamp(fc*Math.pow(2,amt*(v.get(C['fL'+k])-50)/50),20,20000),p=filt.frequency;let tt=t;p.setValueAtTime(F(4),t);
+    for(let i=1;i<=3;i++){tt+=egSec(v.get(C['fT'+i]));p.exponentialRampToValueAtTime(F(i),tt)}fEnv={p,rel:egSec(v.get(C.fT4)),end:F(4)}}
   const saw=ctx.createOscillator();saw.type='sawtooth';saw.frequency.value=f0;srcs.push(saw);
   const noise=ctx.createBufferSource();noise.buffer=AU.noiseBuf;noise.loop=true;srcs.push(noise);
   const env=(g,d,o,lvl)=>{const s=d===V?V:N;const L=[s.L1,s.L2,s.L3,s.L4].map(x=>v.get(x,o)),T=[s.T1,s.T2,s.T3,s.T4].map(x=>v.get(x,o)),hold=egSec(v.get(s.hold,o))*(v.get(s.hold,o)?1:0);
@@ -824,14 +837,23 @@ function noteOn(note){const ctx=audio(),v=S.voice,t=ctx.currentTime+0.01,f0=mtof
     for(let i=0;i<3;i++){tt+=egSec(T[i]);g.gain.linearRampToValueAtTime(G(L[i]),tt)}gains.push({g,rel:egSec(T[3]),end:G(L[3])})};
   for(let o=0;o<8;o++){const tl=v.get(V.tl,o);if(!tl)continue;const hz=vHz(v,o,f0);if(hz>ctx.sampleRate/2)continue;const form=v.get(V.form,o),g=ctx.createGain();const lvl=lvGain(tl)*(1-v.get(CAR[o])/16);
     if(form===7||form===5||form===6){const bp=ctx.createBiquadFilter();bp.type='bandpass';bp.frequency.value=hz;bp.Q.value=qFromOct(bwOct(v.get(V.bw,o)));saw.connect(bp).connect(g);env(g,V,o,lvl*3)}
-    else{const os=ctx.createOscillator();os.type=form===0?'sine':(form<=2?'sawtooth':'square');os.frequency.value=hz;os.detune.value=(v.get(V.detune,o)-15)*2;srcs.push(os);os.connect(g);env(g,V,o,lvl*(form?0.35:0.6))}
+    else{const os=ctx.createOscillator();os.type=form===0?'sine':(form<=2?'sawtooth':'square');os.frequency.value=hz;os.detune.value=(v.get(V.detune,o)-15)*2;srcs.push(os);oscs.push(os);os.connect(g);env(g,V,o,lvl*(form?0.35:0.6))}
     g.connect(filt)}
   for(let o=0;o<8;o++){const tl=v.get(N.tl,o);if(!tl)continue;const hz=v.get(N.mode,o)===0?nHz(v,o):nHz(v,o)*f0/261.6;if(hz>ctx.sampleRate/2)continue;const bp=ctx.createBiquadFilter(),g=ctx.createGain();bp.type='bandpass';bp.frequency.value=hz;bp.Q.value=qFromOct(bwOct(v.get(N.bw,o)))*(1+v.get(N.res,o)*0.5);noise.connect(bp).connect(g);env(g,N,o,lvGain(tl)*2.5);g.connect(filt)}
-  if(v.get(C.l1p,0)>0){const lfo=ctx.createOscillator(),lg=ctx.createGain();lfo.frequency.value=0.1+v.get(C.l1s)/99*12;lg.gain.value=v.get(C.l1p)*1.2;lfo.connect(lg);lg.connect(saw.detune);srcs.forEach(s=>s.start(t));lfo.start(t+egSec(v.get(C.l1d))*0.3);srcs.push(lfo)}
-  else srcs.forEach(s=>s.start(t));voiceNodes={srcs,gains,filt}}
+  srcs.forEach(s=>s.start(t));
+  const lfoOsc=(w,hz)=>{const o=ctx.createOscillator();o.type=['triangle','sawtooth','sawtooth','square','sine','square'][w];o.frequency.value=hz;const inv=ctx.createGain();inv.gain.value=w===1?-1:1;o.connect(inv);return {o,out:inv}};
+  const p1=v.get(C.l1p),a1=v.get(C.l1a),f1=v.get(C.fL1d),f2=v.get(C.fL2d);
+  if(p1||a1||f1){const L=lfoOsc(v.get(C.l1w),0.1+v.get(C.l1s)/99*12);
+    if(p1){const g=ctx.createGain();g.gain.value=p1*1.2;L.out.connect(g);g.connect(saw.detune);oscs.forEach(os=>g.connect(os.detune))}
+    if(a1){const d=a1/99*.45;trem.gain.value=1-d;const g=ctx.createGain();g.gain.value=d;L.out.connect(g).connect(trem.gain)}
+    if(f1){const g=ctx.createGain();g.gain.value=fc*(Math.pow(2,f1/99*2)-1);L.out.connect(g).connect(filt.frequency)}
+    L.o.start(t+egSec(v.get(C.l1d))*0.3);srcs.push(L.o)}
+  if(f2){const L=lfoOsc(v.get(C.l2w),0.1+v.get(C.l2s)/127*12),g=ctx.createGain();g.gain.value=fc*(Math.pow(2,f2/99*2)-1);L.out.connect(g).connect(filt.frequency);L.o.start(t);srcs.push(L.o)}
+  voiceNodes={srcs,gains,filt,trem,fEnv}}
 function noteOff(now){if(!voiceNodes)return;const ctx=AU.ctx,t=ctx.currentTime,n=voiceNodes;voiceNodes=null;let mx=0;
   for(const {g,rel,end} of n.gains){g.gain.cancelScheduledValues(t);g.gain.setValueAtTime(g.gain.value,t);const r=now?0.02:Math.min(rel,2);g.gain.linearRampToValueAtTime(end,t+r);mx=Math.max(mx,r)}
-  n.srcs.forEach(s=>{try{s.stop(t+mx+0.05)}catch(e){}});setTimeout(()=>n.filt.disconnect(),(mx+0.2)*1000)}
+  if(n.fEnv&&!now){const {p,rel,end}=n.fEnv;p.cancelScheduledValues(t);p.setValueAtTime(Math.max(20,p.value),t);p.exponentialRampToValueAtTime(end,t+Math.min(rel,2)+.001)}
+  n.srcs.forEach(s=>{try{s.stop(t+mx+0.05)}catch(e){}});setTimeout(()=>{n.filt.disconnect();if(n.trem)n.trem.disconnect()},(mx+0.2)*1000)}
 
 /* ---------- tabs ---------- */
 const TABS=[['bocca','Mouth'],['coro','Choir'],['morph','Morph'],['spettro','Spectrum'],['inviluppi','Envelopes'],['voce','Voice'],['fseq','Fseq'],['libreria','Library'],['midi','MIDI']];
@@ -1343,16 +1365,22 @@ $('#mpScale').onchange=buildKeys;noteSel.addEventListener('change',buildKeys);
 syncs.push(()=>{if(S.tab==='morph'){drawMorph();readMorph()}});
 buildKeys();
 
-/* ---------- jam mode: a pocket formant instrument ---------- */
-/* Four pages on one screen (sing, shape, seq, talk), four encoders whose job follows the page and is printed at the
-   bottom of the screen, a two-octave keyboard. It all drives the same mouth as the editor, so a linked FS1R follows. */
+/* ---------- jam mode: a pocket instrument for the whole synth ---------- */
+/* Two rows of pages on one screen. perform (sing, seq, talk) plays the mouth; sound (voices, wiring, shape, env, filter,
+   move) reaches the rest of the voice. Four encoders whose job follows the page, printed at the bottom of the screen;
+   shift turns them over, rand rolls the page, lock keeps a note sounding. A linked FS1R follows everything. */
 for(const k of ['fo','lo','wo'])if(!Array.isArray(S.mouth[k]))S.mouth[k]=[0,0,0,0];
 const JV={a:'--j-orange',e:'--j-lime',i:'--j-cyan',o:'--j-white',u:'--j-violet'};
 const J_SCALES=[['chromatic',[0,1,2,3,4,5,6,7,8,9,10,11]],['minor pent',[0,3,5,7,10]],['major',[0,2,4,5,7,9,11]],['minor',[0,2,3,5,7,8,10]],['dorian',[0,2,3,5,7,9,10]]];
-const J_MODES=[['sing','--j-orange'],['shape','--j-lime'],['seq','--j-cyan'],['talk','--j-violet']];
+const J_PERFORM=[['sing','--j-orange'],['seq','--j-cyan'],['talk','--j-violet']];
+const J_SOUND=[['voices','--j-amber'],['wiring','--j-white'],['shape','--j-lime'],['env','--j-cyan'],['filter','--j-violet'],['move','--j-orange']];
+const J_MODES=[...J_PERFORM,...J_SOUND];
+const isVoicePage=m=>['voices','wiring','env','filter','move'].includes(m);
 const ENC_COL=['--j-cyan','--j-lime','--j-white','--j-orange'];
 const JAM={cv:$('#jamScreen'),mode:store.get('jam-mode','sing'),holds:new Set(),raf:0,oct:store.get('jam-oct',0),scale:store.get('jam-scale',1),rec:false,playing:false,step:-1,cursor:0,sel:-1,
-  timer:0,gateT:0,next:0,fsel:0,drag:null,lastNote:60,pace:.22,infl:0,trail:[],hist:[],histT:0,encs:[],cc:{},nv:'',toast:null,anim:0,frame:0};
+  timer:0,gateT:0,next:0,fsel:0,drag:null,lastNote:60,pace:.22,infl:0,trail:[],hist:[],histT:0,encs:[],cc:{},nv:'',toast:null,anim:0,frame:0,
+  op:store.get('jam-op',0),vn:'v',shift:false,lock:false,vkeys:[],vnote:null,skip:new Set(),envT:'amp',envAll:true,lfo:0,algF:'suggested',clip:null,hits:[]};
+if(!J_MODES.some(x=>x[0]===JAM.mode))JAM.mode='sing';
 const jc=n=>JAM.cc[n]||(JAM.cc[n]=getComputedStyle($('#kids')).getPropertyValue(n).trim());
 const vowelOf=(x,y)=>{let b='a',bd=9;for(const ch of 'aeiou'){const v=VOWELS.find(q=>q[0]===ch),d=Math.hypot(x-v[1],y-v[2]);if(d<bd){bd=d;b=ch}}return b};
 const inScale=n=>J_SCALES[JAM.scale][1].includes(((n%12)+12)%12);
@@ -1363,6 +1391,214 @@ function defaultSeq(){const P=[[1,60,'a'],[0],[1,63,'o'],[1,67,'u'],[0],[1,65,'e
   return {len:16,tempo:108,glide:90,gate:.7,steps:P.map(([on,n,v])=>{const V0=VOWELS.find(q=>q[0]===(v||'a'));return {on:!!on,n:n||60,x:V0[1],y:V0[2]}})}}
 JAM.seq=store.get('jam-seq',null);if(!JAM.seq||!Array.isArray(JAM.seq.steps)||JAM.seq.steps.length!==16)JAM.seq=defaultSeq();
 const saveSeq=()=>store.set('jam-seq',JAM.seq);
+
+/* ---- sound pages: the rest of the voice, four knobs at a time ---- */
+/* voices, wiring, env, filter and move write the voice itself (and the FS1R when linked). Their keyboard plays the
+   whole voice through the editor's preview, filter envelope and LFO included; a changed knob re-strikes a held note. */
+const keyTrack=(v,n)=>Math.pow(2,(n-v.get(C.fKp))/12*(v.get(C.fKs)-64)/64);
+const fmtHz=h=>h>=1000?(h/1000).toFixed(h>=9950?1:2)+' kHz':Math.round(h)+' Hz';
+const fmtT=x=>{const s=egSec(x);return s<1?Math.round(s*1000)+' ms':s.toFixed(s<10?2:1)+' s'};
+const jF0=()=>mtof(JAM.lastNote+S.voice.get(C.shift)-24);
+const NONE={label:'—',min:0,max:1,get:()=>0,set:()=>{},fmt:()=>'—'};
+const opDefs=t=>t==='v'?V:N;
+const cutHz=x=>20*Math.pow(2,x/127*10);
+const lfo1Hz=x=>0.1+x/99*12, lfo2Hz=x=>0.1+x/127*12;
+/* the FS1R only filters a part whose filter switch is on (a performance setting, off in many patches): the first filter edit turns it on */
+function jFilterSw(d){if(JAM.fsw||d.s!=='c'||d.k[0]!=='f'||d.k==='fb'||!M.out||!S.live)return;JAM.fsw=true;sendRaw(buildParam(S.dev,0x30+S.part,0,0x07,1),'Part '+(S.part+1)+' filter switch on');jToast('fs1r: part '+(S.part+1)+' filter on')}
+function jSet(d,op,v){v=clamp(Math.round(v),0,d.max);if(S.voice.get(d,op)!==v){jFilterSw(d);setParam(d,op,v,true);jLive(d)}}
+/* a held note follows the knob: cutoff and resonance glide, anything else re-strikes it (at most every 140 ms) */
+function jLive(d){if(!voiceNodes||JAM.vnote==null)return;const v=S.voice,n=voiceNodes;
+  if((d===C.fCut||d===C.fRes)&&v.get(C.fEgD)===64&&n.filt){const t=AU.ctx.currentTime,f=filterNode(AU.ctx,v);n.filt.frequency.setTargetAtTime(f.frequency.value*keyTrack(v,JAM.vnote),t,.02);n.filt.Q.setTargetAtTime(f.Q.value,t,.02);return}
+  clearTimeout(JAM.retrigT);const go=()=>{JAM.retrigLast=performance.now();if(voiceNodes&&JAM.vnote!=null)noteOn(JAM.vnote)};
+  if(performance.now()-(JAM.retrigLast||0)>140)go();else JAM.retrigT=setTimeout(go,140)}
+function pb(label,d,op,o={}){return Object.assign({label,min:0,max:d.max,step:1,get:()=>S.voice.get(d,op),set:v=>jSet(d,op,v),fmt:fmtOf(d)},o)}
+function cb(label,defs,o={}){return Object.assign({label,min:0,max:defs[0].max,step:1,get:()=>S.voice.get(defs[0]),set:x=>defs.forEach(d=>jSet(d,0,x)),fmt:fmtOf(defs[0])},o)}
+function opHz(t,o){return t==='v'?vHz(S.voice,o,jF0()):nHz(S.voice,o)}
+function setOpHz(t,o,hz){const v=S.voice;hz=clamp(hz,16,16000);
+  if(t==='v'){const [c,f]=vIsFixed(v,o)?fixedFromHz(hz,31):ratioFrom(hz/jF0());jSet(V.coarse,o,c);jSet(V.fine,o,f)}
+  else{jSet(N.mode,o,0);const [c,f]=fixedFromHz(hz,21);jSet(N.coarse,o,c);jSet(N.fine,o,f)}}
+/* the operators an envelope knob reaches: every voice that sounds, or only the selected one */
+function envOps(){const v=S.voice;if(!JAM.envAll)return [[JAM.vn,JAM.op]];const L=[];for(let o=0;o<8;o++){if(v.get(V.tl,o))L.push(['v',o]);if(v.get(N.tl,o))L.push(['n',o])}return L.length?L:[[JAM.vn,JAM.op]]}
+function envRef(){const L=envOps();return L.find(([t,o])=>t===JAM.vn&&o===JAM.op)||L[0]}
+function eb(label,keys,o={}){const [t0,o0]=envRef(),d0=opDefs(t0)[keys[0]];
+  return Object.assign({label,min:0,max:d0.max,step:1,get:()=>S.voice.get(opDefs(t0)[keys[0]],o0),set:x=>{for(const [t,op] of envOps())for(const k of keys)jSet(opDefs(t)[k],op,x)},fmt:fmtOf(d0)},o)}
+function algList(){let ids=[...Array(88).keys()];const f=JAM.algF;if(f==='suggested'){const sc=ids.map(algScore);ids.sort((x,y)=>sc[y]-sc[x]||x-y);return ids.slice(0,12)}
+  return ids.filter(ALG_FILTERS.find(q=>q[0]===f)[1])}
+const pct=x=>Math.round(x/99*100)+'%', bip=x=>(x>50?'+':'')+(x-50);
+function soundBindings(mode){const v=S.voice,o=JAM.op,t=JAM.vn,sh=JAM.shift;
+  if(mode==='voices'){
+    if(sh)return t==='v'?[pb('⇧ detune',V.detune,o),pb('⇧ skirt',V.skirt,o,{fmt:x=>x+' / 7'}),pb('⇧ key track',V.nscale,o,{fmt:x=>x+'%'}),pb('⇧ velocity',V.avs,o)]
+      :[pb('⇧ transpose',N.trans,o),pb('⇧ skirt',N.skirt,o,{fmt:x=>x+' / 7'}),pb('⇧ key track',N.nscale,o,{fmt:x=>x+'%'}),pb('⇧ velocity',N.avs,o)];
+    const pitch=t==='v'&&!vIsFixed(v,o)?{label:'ratio',min:Math.log2(.5),max:Math.log2(31.99),get:()=>Math.log2(ratioOf(S.voice.get(V.coarse,o),S.voice.get(V.fine,o))),set:x=>setOpHz('v',o,Math.pow(2,x)*jF0()),fmt:x=>'×'+Math.pow(2,x).toFixed(2),span:420}
+      :{label:'pitch',min:Math.log2(20),max:Math.log2(12000),get:()=>Math.log2(opHz(t,o)),set:x=>setOpHz(t,o,Math.pow(2,x)),fmt:()=>fmtHz(opHz(t,o)),span:480};
+    return [pitch,pb('level',opDefs(t).tl,o,{fmt:x=>''+x}),pb('width',opDefs(t).bw,o,{fmt:x=>bwOct(x).toFixed(2)+' oct'}),t==='v'?pb('form',V.form,o):pb('resonance',N.res,o,{fmt:x=>x+' / 7'})]}
+  if(mode==='wiring'){
+    if(sh)return [pb('⇧ v'+(o+1)+' level',V.tl,o,{fmt:x=>''+x}),pb('⇧ v'+(o+1)+' width',V.bw,o,{fmt:x=>bwOct(x).toFixed(2)+' oct'}),pb('⇧ v'+(o+1)+' detune',V.detune,o),pb('⇧ note shift',C.shift,0,{fmt:x=>(x>24?'+':'')+(x-24)+' st'})];
+    const ids=algList(),a=v.get(C.alg);
+    return [pb('algorithm',C.alg,0,{fmt:x=>(x+1)+' / 88',span:520}),pb('feedback',C.fb,0,{fmt:x=>x+' / 7'}),pb('out trim · v'+(o+1),CAR[o],0),
+      {label:'browse',min:0,max:Math.max(1,ids.length-1),step:1,get:()=>Math.max(0,ids.indexOf(S.voice.get(C.alg))),set:i=>jSet(C.alg,0,ids[clamp(Math.round(i),0,ids.length-1)]),fmt:i=>(ids.includes(a)?(i+1)+'/'+ids.length:'—')+' '+(JAM.algF==='with feedback'?'fb':JAM.algF)}]}
+  if(mode==='env'){const T={fmt:fmtT};
+    if(JAM.envT==='amp')return sh?[eb('⇧ hold',['hold'],T),eb('⇧ time scale',['ts'],{fmt:x=>x+' / 7'}),eb('⇧ velocity',['avs']),eb('⇧ peak',['L1'],{fmt:pct})]
+      :[eb('attack',['T1'],T),eb('decay',['T2','T3'],T),eb('sustain',['L2','L3'],{fmt:pct}),eb('release',['T4'],T)];
+    if(JAM.envT==='formant')return sh?[eb('⇧ velocity',['fvs']),eb('⇧ bias',['fbs']),eb('⇧ lfo sens',['fms'],{fmt:x=>x+' / 7'}),eb('⇧ time scale',['ts'],{fmt:x=>x+' / 7'})]
+      :[eb('start',['feI'],{fmt:bip}),eb('peak',['feA'],{fmt:bip}),eb('attack',['feAt'],T),eb('decay',['feDt'],T)];
+    if(JAM.envT==='pitch')return sh?[cb('⇧ start',[C.pL0],{fmt:bip}),cb('⇧ peak',[C.pL1],{fmt:bip}),cb('⇧ end',[C.pL4],{fmt:bip}),cb('⇧ range',[C.pRange])]
+      :[cb('attack',[C.pT1],T),cb('decay',[C.pT2,C.pT3],T),cb('sustain',[C.pL2,C.pL3],{fmt:bip}),cb('release',[C.pT4],T)];
+    return sh?[cb('⇧ peak',[C.fL1],{fmt:bip}),cb('⇧ end',[C.fL4],{fmt:bip}),cb('⇧ velocity',[C.fEgV]),cb('⇧ time scale',[C.fTs],{fmt:x=>x+' / 7'})]
+      :[cb('attack',[C.fT1],T),cb('decay',[C.fT2,C.fT3],T),cb('sustain',[C.fL2,C.fL3],{fmt:bip}),cb('release',[C.fT4],T)]}
+  if(mode==='filter')return sh?[pb('⇧ input gain',C.fGain,0),pb('⇧ key point',C.fKp,0),pb('⇧ reso vel',C.fResV,0),pb('⇧ env vel',C.fEgV,0)]
+    :[pb('cutoff',C.fCut,0,{fmt:x=>fmtHz(cutHz(x)),span:300}),pb('resonance',C.fRes,0,{fmt:x=>Math.round(Math.max(0,x-16))+'%'}),pb('env amount',C.fEgD,0),pb('key track',C.fKs,0)];
+  /* move */
+  if(JAM.lfo===0)return sh?[pb('⇧ delay',C.l1d,0,{fmt:fmtT}),pb('⇧ filter',C.fL1d,0),pb('⇧ v'+(o+1)+' pitch sens',V.pms,o,{fmt:x=>x+' / 7'}),pb('⇧ v'+(o+1)+' amp sens',V.ams,o,{fmt:x=>x+' / 7'})]
+    :[pb('speed',C.l1s,0,{fmt:x=>'≈'+lfo1Hz(x).toFixed(1)+' Hz'}),pb('wobble · pitch',C.l1p,0),pb('pulse · level',C.l1a,0),pb('sweep · formants',C.l1f,0)];
+  return sh?[pb('⇧ v'+(o+1)+' formant sens',V.fms,o,{fmt:x=>x+' / 7'}),pb('⇧ n'+(o+1)+' formant sens',N.fms,o,{fmt:x=>x+' / 7'}),pb('⇧ v'+(o+1)+' amp sens',V.ams,o,{fmt:x=>x+' / 7'}),pb('⇧ phase',C.l2ph,0)]
+    :[pb('speed',C.l2s,0,{fmt:x=>'≈'+lfo2Hz(x).toFixed(1)+' Hz'}),pb('phase',C.l2ph,0),pb('filter',C.fL2d,0),pb('lfo 1 → filter',C.fL1d,0)]}
+
+/* the whole-voice engine for the sound pages; lock latches the last note so both hands are free for the knobs */
+function jVoiceDown(n){audio();if(JAM.lock)JAM.vkeys=[];JAM.vkeys=JAM.vkeys.filter(x=>x!==n);JAM.vkeys.push(n);JAM.vnote=n;noteOn(n);hwNote(n)}
+function jVoiceUp(n){if(JAM.lock||!JAM.vkeys.includes(n))return;JAM.vkeys=JAM.vkeys.filter(x=>x!==n);if(JAM.vkeys.length){const l=JAM.vkeys[JAM.vkeys.length-1];JAM.vnote=l;noteOn(l);hwNote(l)}else jVoiceOff()}
+function jVoiceOff(){const had=JAM.vnote!=null;JAM.vkeys=[];JAM.vnote=null;if(had){noteOff();hwNote(null)}}
+function jReleaseAll(){for(const h of [...JAM.holds])if(h!=='seq')JAM.holds.delete(h);voiceOffIfIdle();jVoiceOff();document.querySelectorAll('#jPiano [data-on="1"],#jVowels [data-on="1"]').forEach(b=>b.dataset.on='0')}
+function setLock(on){JAM.lock=on;if(!on)jReleaseAll();syncUtil()}
+function setShift(on){if(JAM.shift===on)return;JAM.shift=on;renderCtx();jEncSync();syncUtil()}
+function jSelOp(o,t){JAM.op=clamp(o,0,7);if(t)JAM.vn=t;store.set('jam-op',JAM.op);renderCtx();jEncSync()}
+
+/* voice tools: copy, paste and reset one operator (62 bytes: voiced then unvoiced half) */
+const OPB=o=>112+o*62;
+function opCopy(){JAM.clip=S.voice.b.slice(OPB(JAM.op),OPB(JAM.op)+62);jToast('copied v'+(JAM.op+1));renderCtx()}
+function opWrite(fn,msg){H.last=0;snapshot();fn(S.voice);H.last=0;sendVoice(true);if(voiceNodes&&JAM.vnote!=null)noteOn(JAM.vnote);jEncSync();renderCtx();jToast(msg)}
+function opPaste(){if(!JAM.clip){jToast('copy a voice first');return}opWrite(v=>v.b.set(JAM.clip,OPB(JAM.op)),'pasted into v'+(JAM.op+1))}
+function opInit(){const o=JAM.op;opWrite(v=>{v.b.fill(0,OPB(o),OPB(o)+62);
+  const put=(d,x)=>v.set(d,o,x);
+  [[V.trans,24],[V.coarse,1],[V.bw,30],[V.detune,15],[V.feI,50],[V.feA,50],[V.L1,99],[V.L2,99],[V.L3,99],[V.T4,30],[V.bp,39],[V.bwbias,7],[V.fbs,7],[V.fvs,7],[V.avs,7],[V.egb,7],[V.tl,o?0:90],
+   [N.trans,24],[N.coarse,4],[N.bw,40],[N.bwbias,7],[N.feI,50],[N.feA,50],[N.lks,7],[N.L1,99],[N.L2,99],[N.L3,99],[N.T4,30],[N.fbs,7],[N.fvs,7],[N.avs,7],[N.egb,7]].forEach(([d,x])=>put(d,x))},'v'+(o+1)+' reset')}
+function opFixed(){const o=JAM.op,v=S.voice,hz=vHz(v,o,jF0()),fx=!vIsFixed(v,o);jSet(V.mode,o,fx?1:0);setOpHz('v',o,hz);renderCtx();jEncSync();jToast('v'+(o+1)+(fx?' fixed '+fmtHz(opHz('v',o)):' ratio ×'+ratioOf(v.get(V.coarse,o),v.get(V.fine,o)).toFixed(2)))}
+
+/* rand rolls the page; with shift held it takes the last change back */
+function jRand(){if(JAM.shift){undo();if(voiceNodes&&JAM.vnote!=null)noteOn(JAM.vnote);jEncSync();renderCtx();jToast('undo');return}
+  const m=JAM.mode,R=(a,b)=>a+Math.floor(Math.random()*(b-a+1)),v=S.voice;H.last=0;
+  if(m==='sing')animateMouth({x:Math.random(),y:Math.random(),throat:12+Math.random()*10,bright:Math.random()*60-30,width:14+Math.random()*30},380);
+  else if(m==='shape'){S.mouth.fo=S.mouth.fo.map(()=>R(-7,7));S.mouth.lo=S.mouth.lo.map(()=>R(-8,4));S.mouth.wo=S.mouth.wo.map(()=>R(-5,15));applyMouth()}
+  else if(m==='seq')seqRandom();
+  else if(m==='talk'){JAM.pace=.12+Math.random()*.28;JAM.infl=R(0,3)}
+  else if(m==='voices'){const o=JAM.op,t=JAM.vn;setOpHz(t,o,Math.pow(2,Math.log2(150)+Math.random()*5.3));jSet(opDefs(t).tl,o,R(62,95));jSet(opDefs(t).bw,o,R(4,60));if(t==='v')jSet(V.form,o,[0,7,7,5,1,3][R(0,5)]);else jSet(N.res,o,R(0,6))}
+  else if(m==='wiring'){const ids=algList();jSet(C.alg,0,ids[R(0,Math.min(5,ids.length-1))]);jSet(C.fb,0,R(0,5))}
+  else if(m==='env'){const T=JAM.envT;
+    if(T==='amp'){const a=R(0,45),d=R(25,70),s=R(30,99),r=R(25,72);for(const [t,o] of envOps()){const D=opDefs(t);jSet(D.T1,o,a);jSet(D.T2,o,d);jSet(D.T3,o,d);jSet(D.L1,o,99);jSet(D.L2,o,s);jSet(D.L3,o,s);jSet(D.T4,o,r);jSet(D.L4,o,0)}}
+    else if(T==='formant'){for(const [t,o] of envOps()){const D=opDefs(t);jSet(D.feI,o,R(30,70));jSet(D.feA,o,R(30,70));jSet(D.feAt,o,R(20,70));jSet(D.feDt,o,R(30,80))}}
+    else{const P=T==='pitch'?['pL0','pL1','pL2','pL3','pL4','pT1','pT2','pT3','pT4']:['fL4','fL1','fL2','fL3','fL4','fT1','fT2','fT3','fT4'],sp=T==='pitch'?6:40,s=R(50-sp/2,50+sp);
+      jSet(C[P[0]],0,R(50-sp,50+sp));jSet(C[P[1]],0,R(50,50+sp));jSet(C[P[2]],0,s);jSet(C[P[3]],0,s);if(T==='pitch')jSet(C[P[4]],0,50);for(let i=5;i<9;i++)jSet(C[P[i]],0,R(20,70))}}
+  else if(m==='filter'){jSet(C.fType,0,R(0,5));jSet(C.fCut,0,R(55,115));jSet(C.fRes,0,R(16,80));jSet(C.fEgD,0,R(40,104))}
+  else if(m==='move'){if(JAM.lfo===0){jSet(C.l1w,0,R(0,5));jSet(C.l1s,0,R(25,80));jSet(C.l1p,0,R(0,25));jSet(C.l1a,0,R(0,30));jSet(C.l1f,0,R(0,40))}else{jSet(C.l2w,0,R(0,5));jSet(C.l2s,0,R(25,100));jSet(C.fL2d,0,R(0,60))}}
+  renderCtx();jEncSync();jToast('rand '+m)}
+
+/* ---- sound page screens ---- */
+const VG=(W,H,d)=>{const x0=W*.06,x1=W*.96,t=Math.max(H*.2,62*d),b=H-50*d,lo=40,hi=12000,dbTop=3,dbBot=-60;return {X:hz=>x0+Math.log(clamp(hz,lo,hi)/lo)/Math.log(hi/lo)*(x1-x0),HZ:x=>lo*Math.pow(hi/lo,clamp((x-x0)/(x1-x0),0,1)),
+  Y:db=>t+(dbTop-db)/(dbTop-dbBot)*(b-t),DB:y=>dbTop-(y-t)/(b-t)*(dbTop-dbBot),t,b,x0,x1,lo,hi,dbBot}};
+const tlDb=tl=>tl?(tl-99)*.75:-99;
+function opBands(){const v=S.voice,f0=jF0(),a=v.get(C.alg),out=[];
+  for(let o=0;o<8;o++){const form=v.get(V.form,o),fmt=form===7||form>=5;out.push({t:'v',o,hz:vHz(v,o,f0),tl:v.get(V.tl,o),oct:fmt?bwOct(v.get(V.bw,o)):.07,car:ALGS[a].c.includes(o),form});
+    out.push({t:'n',o,hz:nHz(v,o),tl:v.get(N.tl,o),oct:bwOct(v.get(N.bw,o)),car:true})}return out}
+function hillPath(g,G,hz,db,oct){const sig=Math.max(.035,oct/2.355),pk=G.Y(Math.max(G.dbBot,db)),N=64;g.beginPath();
+  for(let k=0;k<=N;k++){const dd=(k/N*2-1)*3*sig,x=G.X(hz*Math.pow(2,dd)),a=Math.exp(-.5*(dd/sig)**2),y=G.b-(G.b-pk)*a;k?g.lineTo(x,y):g.moveTo(x,y)}}
+function axisHz(g,G,d,font,col){for(const hz of [100,200,500,1000,2000,5000,10000]){if(hz<G.lo||hz>G.hi)continue;const x=G.X(hz);g.strokeStyle=col;g.lineWidth=d;g.beginPath();g.moveTo(x,G.t);g.lineTo(x,G.b);g.stroke();g.fillStyle=jc('--j-faint');g.font=font(9);g.textAlign='center';g.textBaseline='top';g.fillText(hz>=1000?hz/1000+'k':''+hz,x,G.b+4*d)}}
+function drawVoices(g,W,H,d,font,glow,noglow){const G=VG(W,H,d),amber=jc('--j-amber');axisHz(g,G,d,font,'rgba(255,176,32,.07)');
+  g.strokeStyle='rgba(238,240,246,.15)';g.lineWidth=d;g.beginPath();g.moveTo(G.x0,G.b);g.lineTo(G.x1,G.b);g.stroke();JAM.hits=[];
+  const B=opBands(),sel=b=>b.t===JAM.vn&&b.o===JAM.op;
+  for(const b of [...B.filter(b=>!sel(b)),...B.filter(sel)]){const x=G.X(b.hz),s=sel(b),on=b.tl>0;JAM.hits.push([x,G.Y(Math.max(G.dbBot,tlDb(b.tl))),b.t,b.o]);
+    if(!on&&!s){g.fillStyle='#1d1d24';g.beginPath();g.arc(x,G.b-3*d,2*d,0,7);g.fill();continue}
+    const col=s?amber:b.t==='n'?jc('--j-cyan'):b.car?jc('--j-white'):jc('--j-dim');
+    hillPath(g,G,b.hz,tlDb(b.tl),b.oct);if(b.t==='v'){const gr=g.createLinearGradient(0,G.t,0,G.b);gr.addColorStop(0,s?'rgba(255,176,32,.35)':'rgba(238,240,246,.10)');gr.addColorStop(1,'rgba(0,0,0,0)');g.fillStyle=gr;g.fill()}
+    g.strokeStyle=col;g.lineWidth=(s?2:1.2)*d;if(b.t==='n')g.setLineDash([3*d,3*d]);if(s)glow(col,10);g.globalAlpha=on?1:.45;g.stroke();g.setLineDash([]);noglow();
+    const pk=G.Y(Math.max(G.dbBot,tlDb(b.tl)));g.fillStyle=s?amber:jc('--j-dim');g.font=font(9.5,s?800:600);g.textAlign='center';g.textBaseline='bottom';g.fillText((b.t==='v'?'V':'N')+(b.o+1),x,pk-5*d);g.globalAlpha=1}
+  const t=JAM.vn,o=JAM.op,v=S.voice,form=t==='v'?FORMS[v.get(V.form,o)]:'noise',w=bwOct(v.get(opDefs(t).bw,o));
+  g.font=font(10);g.textAlign='right';g.textBaseline='top';g.fillStyle=jc('--j-white');g.fillText((t==='v'?'V':'N')+(o+1)+'  '+form+'  '+fmtHz(opHz(t,o))+'  ·  '+w.toFixed(2)+' oct'+(t==='v'&&!vIsFixed(v,o)?'  ·  ratio':''),W-10*d,30*d);
+  g.textAlign='left';g.fillStyle=jc('--j-dim');g.fillText(noteName(JAM.lastNote)+' · alg '+(v.get(C.alg)+1)+(CH.solo?' · solo '+CH.solo.toUpperCase():''),10*d,30*d)}
+function wiringLayout(W,H,d){const a=S.voice.get(C.alg),A=ALGS[a],dp=[...Array(8)].map((_,o)=>algDepth(a,o)),md=Math.max(1,...dp),out=H-54*d,top=H*.42,bot=out-26*d;
+  return {a,A,out,P:dp.map((k,o)=>[W*.09+o*(W*.82/7),bot-k*((bot-top)/md)])}}
+function drawWiring(g,W,H,d,font,glow,noglow){const L=wiringLayout(W,H,d),{a,A,out,P}=L,v=S.voice,amber=jc('--j-amber'),white=jc('--j-white'),r=Math.min(15*d,W/34);
+  g.font=font(30,800);g.textAlign='left';g.textBaseline='top';g.fillStyle=white;glow(white,8);g.fillText(''+(a+1),10*d,30*d);noglow();const aw=g.measureText(''+(a+1)).width;
+  g.font=font(11,600);g.fillStyle=jc('--j-dim');g.fillText('/ 88',14*d+aw,46*d);
+  g.font=font(10);g.fillStyle=jc('--j-txt');g.fillText(A.c.length+' voice'+(A.c.length>1?'s':'')+' reach the output'+(A.f?' · feedback on V'+(A.f[0]+1):''),10*d,70*d);
+  const sug=algList().slice(0,4);g.fillStyle=jc('--j-dim');g.fillText(JAM.algF==='suggested'?'fits this voice:  '+sug.map(x=>x+1).join(' · '):JAM.algF+' · '+algList().length+' algorithms',10*d,85*d);
+  g.strokeStyle='rgba(238,240,246,.35)';g.lineWidth=1.5*d;g.beginPath();g.moveTo(W*.05,out);g.lineTo(W*.95,out);g.stroke();g.font=font(9,800);g.fillStyle=jc('--j-dim');g.textAlign='right';g.textBaseline='bottom';g.fillText('OUT',W*.95,out-4*d);
+  A.m.forEach((ms,t)=>ms.forEach(m=>{const [x1,y1]=P[m],[x2,y2]=P[t];g.strokeStyle=v.get(V.tl,m)?'rgba(54,214,255,.6)':'rgba(54,214,255,.18)';g.lineWidth=1.4*d;g.beginPath();g.moveTo(x1,y1);g.quadraticCurveTo((x1+x2)/2,(y1+y2)/2-10*d,x2,y2);g.stroke();
+    const ang=Math.atan2(y2-y1,x2-x1),ex=x2-Math.cos(ang)*r,ey=y2-Math.sin(ang)*r;g.fillStyle='rgba(54,214,255,.7)';g.beginPath();g.moveTo(ex,ey);g.lineTo(ex-Math.cos(ang-.4)*6*d,ey-Math.sin(ang-.4)*6*d);g.lineTo(ex-Math.cos(ang+.4)*6*d,ey-Math.sin(ang+.4)*6*d);g.fill()}));
+  A.c.forEach(o=>{const [x,y]=P[o],trim=v.get(CAR[o]);g.strokeStyle=v.get(V.tl,o)?'rgba(238,240,246,.55)':'rgba(238,240,246,.15)';g.lineWidth=1.4*d;g.beginPath();g.moveTo(x,y+r);g.lineTo(x,out);g.stroke();
+    if(trim){g.font=font(8.5,600);g.fillStyle=jc('--j-orange');g.textAlign='left';g.textBaseline='middle';g.fillText('−'+(trim*1.5).toFixed(1).replace('.0',''),x+4*d,(y+r+out)/2)}});
+  if(A.f){const [x,y]=P[A.f[0]],fb=v.get(C.fb);g.strokeStyle=jc('--j-orange');g.globalAlpha=.3+fb/7*.7;g.lineWidth=(1+fb/3)*d;g.setLineDash([3*d,3*d]);g.beginPath();g.arc(x,y,r+6*d,0,7);g.stroke();g.setLineDash([]);g.globalAlpha=1;
+    g.font=font(8.5,600);g.fillStyle=jc('--j-orange');g.textAlign='center';g.textBaseline='bottom';g.fillText('fb '+fb,x,y-r-8*d)}
+  JAM.hits=[];P.forEach(([x,y],o)=>{const tl=v.get(V.tl,o),s=o===JAM.op,car=A.c.includes(o),col=s?amber:car?white:jc('--j-cyan'),muted=CH.muted.has('v'+o);JAM.hits.push([x,y,'v',o]);
+    g.fillStyle='#020205';g.beginPath();g.arc(x,y,r,0,7);g.fill();g.strokeStyle=col;g.globalAlpha=tl?1:.35;g.lineWidth=(s?2.2:1.3)*d;if(s)glow(col,12);g.stroke();noglow();
+    if(tl){g.strokeStyle=col;g.lineWidth=2.5*d;g.beginPath();g.arc(x,y,r-4*d,-Math.PI/2,-Math.PI/2+tl/99*Math.PI*2);g.stroke()}
+    g.fillStyle=s?amber:jc('--j-txt');g.font=font(9.5,800);g.textAlign='center';g.textBaseline='middle';g.fillText('V'+(o+1),x,y);g.globalAlpha=1;
+    if(muted){g.strokeStyle=jc('--j-red');g.lineWidth=1.2*d;g.beginPath();g.moveTo(x-r*.7,y+r*.7);g.lineTo(x+r*.7,y-r*.7);g.stroke()}})}
+/* the envelope as points in time: [seconds since the previous point, level], the sustain segment marked */
+function egPoints(T){const v=S.voice;
+  if(T==='pitch'||T==='filter'){const p=T==='pitch'?'p':'f',l=k=>(v.get(C[p+'L'+k])-50)/50,t=k=>egSec(v.get(C[p+'T'+k]));return {bi:true,pts:[[0,l(T==='pitch'?0:4)],[t(1),l(1)],[t(2),l(2)],[t(3),l(3)],['sus'],[t(4),l(4)]]}}
+  return null}
+function opEg(t,o,T){const v=S.voice,D=opDefs(t);
+  if(T==='formant'){const i=(v.get(D.feI,o)-50)/50,a=(v.get(D.feA,o)-50)/50;return {bi:true,pts:[[0,i],[egSec(v.get(D.feAt,o)),a],[egSec(v.get(D.feDt,o)),0],['sus'],[.2,0]]}}
+  const L=k=>v.get(D['L'+k],o)/99,Tm=k=>egSec(v.get(D['T'+k],o)),hold=v.get(D.hold,o)?egSec(v.get(D.hold,o)):0;
+  return {bi:false,pts:[[0,L(4)],[hold,L(4)],[Tm(1),L(1)],[Tm(2),L(2)],[Tm(3),L(3)],['sus'],[Tm(4),L(4)]]}}
+function egXY(E){let acc=0,last=0;return E.pts.map(p=>{if(p[0]==='sus'){acc+=.55;return [acc,last]}acc+=Math.sqrt(p[0]);last=p[1];return [acc,p[1]]})}
+function drawEnv(g,W,H,d,font,glow,noglow){const T=JAM.envT,cyan=jc('--j-cyan'),x0=W*.06,x1=W*.94,t=H*.26,b=H-58*d;
+  const curves=[];if(T==='pitch'||T==='filter')curves.push({E:egPoints(T),main:true});else{const L=envOps(),[rt,ro]=envRef();for(const [tt,o] of L)curves.push({E:opEg(tt,o,T),main:tt===rt&&o===ro,lab:(tt==='v'?'V':'N')+(o+1)})}
+  const bi=curves[0].E.bi,Y=l=>bi?(t+b)/2-l*(b-t)/2:b-l*(b-t);
+  const pts=curves.map(c=>egXY(c.E)),span=Math.max(1,...pts.map(p=>p[p.length-1][0])),X=a=>x0+a/span*(x1-x0);
+  g.strokeStyle='rgba(54,214,255,.12)';g.lineWidth=d;for(const l of bi?[-1,0,1]:[0,.5,1]){g.beginPath();g.moveTo(x0,Y(l));g.lineTo(x1,Y(l));g.stroke()}
+  const main=pts[curves.findIndex(c=>c.main)]||pts[0],koff=main[main.length-2][0],kx=X(koff);
+  g.setLineDash([3*d,4*d]);g.strokeStyle='rgba(238,240,246,.3)';g.beginPath();g.moveTo(kx,t-8*d);g.lineTo(kx,b);g.stroke();g.setLineDash([]);g.font=font(8.5,600);g.fillStyle=jc('--j-dim');g.textAlign='center';g.textBaseline='bottom';g.fillText('key off',kx,t-10*d);
+  curves.forEach((c,i)=>{if(c.main)return;const p=pts[i];g.strokeStyle='rgba(54,214,255,.22)';g.lineWidth=d;g.beginPath();p.forEach(([a,l],k)=>k?g.lineTo(X(a),Y(l)):g.moveTo(X(a),Y(l)));g.stroke()});
+  const k=curves.findIndex(c=>c.main),p=pts[k<0?0:k];g.beginPath();p.forEach(([a,l],j)=>j?g.lineTo(X(a),Y(l)):g.moveTo(X(a),Y(l)));
+  if(!bi){g.lineTo(X(p[p.length-1][0]),b);g.lineTo(X(p[0][0]),b);g.closePath();const fg=g.createLinearGradient(0,t,0,b);fg.addColorStop(0,'rgba(54,214,255,.25)');fg.addColorStop(1,'rgba(54,214,255,0)');g.fillStyle=fg;g.fill();g.beginPath();p.forEach(([a,l],j)=>j?g.lineTo(X(a),Y(l)):g.moveTo(X(a),Y(l)))}
+  g.strokeStyle=cyan;g.lineWidth=2*d;glow(cyan,10);g.stroke();noglow();p.forEach(([a,l])=>{g.fillStyle='#020205';g.strokeStyle=cyan;g.lineWidth=1.3*d;g.beginPath();g.arc(X(a),Y(l),3.5*d,0,7);g.fill();g.stroke()});
+  const scope=T==='pitch'||T==='filter'?'common':JAM.envAll?'all voices':(JAM.vn==='v'?'v':'n')+(JAM.op+1)+' only';
+  g.font=font(10);g.textAlign='right';g.textBaseline='top';g.fillStyle=jc('--j-white');g.fillText(T+' · '+scope,W-10*d,30*d);
+  g.textAlign='left';g.fillStyle=jc('--j-dim');g.fillText(T==='amp'?'4 levels + 4 times, played as a·d·s·r':T==='formant'?'each voice\'s frequency envelope':T==='pitch'?'pitch envelope for the whole voice':'filter envelope · env amount on the filter page',10*d,30*d);
+  if(curves.length>1){g.fillText('ghosts: each voice\'s own envelope',10*d,44*d)}}
+function filterResp(v,hz,N){const F=JAM.fbq||(JAM.fbq=(()=>{try{const c=new OfflineAudioContext(1,128,44100);return c.createBiquadFilter()}catch(e){return null}})());
+  const fr=new Float32Array(N),mag=new Float32Array(N),ph=new Float32Array(N);for(let k=0;k<N;k++)fr[k]=hz(k);if(!F)return [...fr].map(()=>0);
+  const ty=v.get(C.fType),probe=filterNode(F.context,v);F.type=probe.type;F.frequency.value=probe.frequency.value;F.Q.value=probe.Q.value;F.getFrequencyResponse(fr,mag,ph);
+  const pw=ty===0?2:ty===1?1.5:1;return [...mag].map(m=>20*Math.log10(Math.pow(Math.max(m,1e-5),pw)))}
+function drawFilter(g,W,H,d,font,glow,noglow){const v=S.voice,x0=W*.07,x1=W*.96,t=H*.2,b=H-52*d,lo=40,hi=16000,dbTop=24,dbBot=-48,violet=jc('--j-violet');
+  const G={X:hz=>x0+Math.log(clamp(hz,lo,hi)/lo)/Math.log(hi/lo)*(x1-x0),HZ:x=>lo*Math.pow(hi/lo,clamp((x-x0)/(x1-x0),0,1)),Y:db=>t+(dbTop-clamp(db,dbBot,dbTop))/(dbTop-dbBot)*(b-t),t,b,x0,x1,lo,hi,dbBot};
+  axisHz(g,G,d,font,'rgba(180,140,255,.07)');for(const db of [0,-24]){g.strokeStyle='rgba(180,140,255,.08)';g.lineWidth=d;g.beginPath();g.moveTo(x0,G.Y(db));g.lineTo(x1,G.Y(db));g.stroke();g.fillStyle=jc('--j-faint');g.font=font(9);g.textAlign='right';g.textBaseline='middle';g.fillText(db===0?'0':'−24',x0-4*d,G.Y(db))}
+  for(const bd of opBands())if(bd.tl&&(bd.t==='n'||bd.car)){hillPath(g,{X:G.X,Y:db=>G.Y(Math.max(dbBot,db*.8-6)),b:G.b,dbBot},bd.hz,tlDb(bd.tl),bd.oct);g.fillStyle='rgba(238,240,246,.05)';g.fill()}
+  const N=120,hz=k=>lo*Math.pow(hi/lo,k/(N-1)),kt=keyTrack(v,JAM.lastNote),amt=(v.get(C.fEgD)-64)/63*5*Math.abs((v.get(C.fL1)-50)/50||1);
+  const curve=cut=>{const vv=new Voice(v.b);vv.set(C.fCut,0,clamp(Math.round(127/10*Math.log2(Math.max(20,cut)/20)),0,127));return filterResp(vv,hz,N)};
+  const base=cutHz(v.get(C.fCut))*kt;
+  if(Math.abs(amt)>.05)for(let s=1;s<=3;s++){const r=curve(base*Math.pow(2,amt*s/3));g.beginPath();r.forEach((db,k)=>{const x=G.X(hz(k)),y=G.Y(db);k?g.lineTo(x,y):g.moveTo(x,y)});g.strokeStyle=`rgba(180,140,255,${.28-.06*s})`;g.lineWidth=d;g.setLineDash([3*d,3*d]);g.stroke();g.setLineDash([])}
+  const R=curve(base);g.beginPath();R.forEach((db,k)=>{const x=G.X(hz(k)),y=G.Y(db);k?g.lineTo(x,y):g.moveTo(x,y)});g.lineTo(x1,b);g.lineTo(x0,b);g.closePath();const fg=g.createLinearGradient(0,t,0,b);fg.addColorStop(0,'rgba(180,140,255,.22)');fg.addColorStop(1,'rgba(180,140,255,0)');g.fillStyle=fg;g.fill();
+  g.beginPath();R.forEach((db,k)=>{const x=G.X(hz(k)),y=G.Y(db);k?g.lineTo(x,y):g.moveTo(x,y)});g.strokeStyle=violet;g.lineWidth=2*d;glow(violet,10);g.stroke();noglow();
+  let pk=-99;const cx=G.X(base);R.forEach((db,k)=>{if(Math.abs(G.X(hz(k))-cx)<W*.03)pk=Math.max(pk,db)});const hy=G.Y(Math.max(pk,-6));JAM.fpeak=[cx,hy];
+  g.fillStyle='#020205';g.strokeStyle=jc('--j-white');g.lineWidth=2*d;glow(jc('--j-white'),8);g.beginPath();g.arc(cx,hy,7*d,0,7);g.fill();g.stroke();noglow();
+  g.font=font(9.5,700);g.fillStyle=jc('--j-white');g.textAlign='center';g.textBaseline='bottom';g.fillText(fmtHz(base),cx,hy-10*d);
+  if(Math.abs(amt)>.05){g.font=font(9);g.fillStyle=violet;g.textAlign=amt>0?'left':'right';g.textBaseline='middle';g.fillText(amt>0?'envelope sweeps it up':'envelope sweeps it down',cx+(amt>0?12:-12)*d,hy+16*d)}
+  g.font=font(10);g.textAlign='right';g.textBaseline='top';g.fillStyle=jc('--j-white');g.fillText(['low-pass 24 dB','low-pass 18 dB','low-pass 12 dB','high-pass','band-pass','notch'][v.get(C.fType)],W-10*d,30*d);
+  g.textAlign='left';g.fillStyle=jc('--j-dim');g.fillText('dim hills: what the voice sends in',10*d,30*d)}
+JAM.filterG=(W,H,d)=>({x0:W*.07,x1:W*.96,t:H*.2,b:H-52*d,lo:40,hi:16000});
+function lfoVal(w,ph,seed){ph=ph-Math.floor(ph);switch(w){case 0:return 1-4*Math.abs(ph-.5);case 1:return 1-2*ph;case 2:return 2*ph-1;case 3:return ph<.5?1:-1;case 4:return Math.sin(ph*Math.PI*2);default:{const r=Math.sin(Math.floor(seed)*12.9898+78.233)*43758.5453;return (r-Math.floor(r))*2-1}}}
+function moveLanes(W,H,d){const a=Math.max(H*.17,48*d);return [[a,H*.38],[H*.43,H*.6]]}
+function drawMove(g,W,H,d,font,glow,noglow,now){const v=S.voice,x0=W*.18,x1=W*.95,lanes=moveLanes(W,H,d),cols=[jc('--j-orange'),jc('--j-violet')],tt=now/1000;
+  const L=[{w:v.get(C.l1w),hz:lfo1Hz(v.get(C.l1s)),name:'LFO 1',sync:v.get(C.l1k)},{w:v.get(C.l2w),hz:lfo2Hz(v.get(C.l2s)),name:'LFO 2',sync:v.get(C.l2k)}];const val=[];
+  L.forEach((l,i)=>{const [y0,y1]=lanes[i],mid=(y0+y1)/2,amp=(y1-y0)/2-4*d,sel=JAM.lfo===i,col=cols[i],ph=tt*l.hz;val[i]=lfoVal(l.w,ph,ph*4);
+    g.strokeStyle=sel?col:'rgba(238,240,246,.12)';g.globalAlpha=sel?.5:1;g.lineWidth=d;g.strokeRect(6*d,y0-4*d,W-12*d,y1-y0+8*d);g.globalAlpha=1;
+    g.font=font(10,800);g.textAlign='left';g.textBaseline='top';g.fillStyle=sel?col:jc('--j-dim');g.fillText(l.name,12*d,y0+2*d);g.font=font(9);g.fillStyle=jc('--j-dim');
+    g.fillText(LFO_WAVES[l.w],12*d,y0+16*d);g.fillText('≈'+l.hz.toFixed(1)+' Hz',12*d,y0+29*d);
+    g.strokeStyle='rgba(238,240,246,.1)';g.beginPath();g.moveTo(x0,mid);g.lineTo(x1,mid);g.stroke();
+    const cyc=2,N=160;g.beginPath();for(let k=0;k<=N;k++){const p=k/N*cyc,y=mid-lfoVal(l.w,p,p*4)*amp,x=x0+k/N*(x1-x0);if(l.w===5&&k){const q=(k-1)/N*cyc;g.lineTo(x,mid-lfoVal(l.w,q,q*4)*amp)}k?g.lineTo(x,y):g.moveTo(x,y)}
+    g.strokeStyle=col;g.lineWidth=(sel?2:1.3)*d;g.globalAlpha=sel?1:.55;if(sel)glow(col,8);g.stroke();noglow();g.globalAlpha=1;
+    const px=x0+(ph%cyc)/cyc*(x1-x0);g.fillStyle=col;glow(col,10);g.beginPath();g.arc(px,mid-val[i]*amp,4*d,0,7);g.fill();noglow()});
+  if(v.get(C.l1d)){g.font=font(9);g.fillStyle=jc('--j-dim');g.textAlign='left';g.textBaseline='top';g.fillText('delay '+fmtT(v.get(C.l1d)),12*d,lanes[0][0]+42*d)}
+  const M=[['PITCH',v.get(C.l1p)/99*val[0],0],['LEVEL',v.get(C.l1a)/99*val[0],0],['FORMANTS',v.get(C.l1f)/99*val[0],0],['FILTER',(v.get(C.fL1d)*val[0]+v.get(C.fL2d)*val[1])/99/2,v.get(C.fL2d)?1:0]];
+  const my0=H*.66,my1=H-40*d,mw=(W-24*d)/4;M.forEach(([nm,x,from],i)=>{const cx=12*d+mw*i+mw/2,top=my0+14*d,bot=my1-4*d,mid=(top+bot)/2,depth=i<3?[v.get(C.l1p),v.get(C.l1a),v.get(C.l1f)][i]/99:Math.max(v.get(C.fL1d),v.get(C.fL2d))/99;
+    g.font=font(8.5,700);g.fillStyle=jc('--j-dim');g.textAlign='center';g.textBaseline='top';g.fillText(nm,cx,my0);
+    g.fillStyle='#101016';g.fillRect(cx-5*d,top,10*d,bot-top);g.strokeStyle='rgba(238,240,246,.15)';g.beginPath();g.moveTo(cx-9*d,mid);g.lineTo(cx+9*d,mid);g.stroke();
+    const col=from?cols[1]:cols[0];g.fillStyle=col;g.globalAlpha=.25;g.fillRect(cx-5*d,mid-depth*(mid-top),10*d,depth*(bot-top));g.globalAlpha=1;
+    const y=mid-x*(mid-top);glow(col,8);g.fillRect(cx-7*d,y-1.5*d,14*d,3*d);noglow()});
+  g.font=font(10);g.textAlign='right';g.textBaseline='top';g.fillStyle=jc('--j-white');g.fillText('key sync '+(L[JAM.lfo].sync?'on':'off')+' · per voice: shift',W-10*d,30*d)}
+
 
 /* voice: holds keep the preview singing; the gate opens and closes it without restarting */
 function gate(on){if(MO.live)MO.live.out.gain.setTargetAtTime(on?1:0,AU.ctx.currentTime,on?.006:.035)}
@@ -1382,12 +1618,13 @@ function encBindings(){const m=S.mouth,q=JAM.seq,f=JAM.fsel;
     {label:'f'+(f+1)+' width',min:-20,max:40,get:()=>m.wo[f],set:v=>m.wo[f]=v,fmt:v=>(v>0?'+':'')+Math.round(v),mouth:1},air];
   if(JAM.mode==='seq')return [{label:'tempo',min:60,max:180,step:1,get:()=>q.tempo,set:v=>q.tempo=v,fmt:v=>Math.round(v)+' bpm',seq:1},{label:'glide',min:0,max:400,get:()=>q.glide,set:v=>q.glide=v,fmt:v=>Math.round(v)+' ms',seq:1},
     {label:'gate',min:.1,max:1,get:()=>q.gate,set:v=>q.gate=v,fmt:v=>v>=.98?'tie':Math.round(v*100)+'%',seq:1},{label:'length',min:1,max:16,step:1,get:()=>q.len,set:v=>q.len=v,fmt:v=>Math.round(v)+' steps',seq:1}];
+  if(JAM.mode!=='talk')return soundBindings(JAM.mode);
   return [{label:'pace',min:.12,max:.4,get:()=>JAM.pace,set:v=>JAM.pace=v,fmt:v=>v<.17?'fast':v<.28?'spoken':'slow'},{label:'tune',min:0,max:3,step:1,get:()=>JAM.infl,set:v=>JAM.infl=v,fmt:v=>['falls','flat','rises','sung'][Math.round(v)]},size,air]}
 function buildEncs(){$('#jEncs').replaceChildren(...[0,1,2,3].map(i=>{const lab=el('span',{class:'k-label'}),val=el('span',{class:'k-val'}),dial=el('div',{class:'k-dial',tabindex:0,role:'slider',style:'--k:var('+ENC_COL[i]+')'});
   const E={lab,val,dial,b:null};JAM.encs[i]=E;let drag=null;
   const put=v=>{const b=E.b;if(!b)return;v=clamp(v,b.min,b.max);if(b.step)v=Math.round(v/b.step)*b.step;b.set(v);if(b.mouth)applyMouth();if(b.seq)saveSeq();jEncSync()};
   dial.addEventListener('pointerdown',e=>{if(!E.b)return;drag={y:e.clientY,v:E.b.get()};dial.setPointerCapture(e.pointerId);e.preventDefault();dial.focus({preventScroll:true})});
-  dial.addEventListener('pointermove',e=>{if(drag)put(drag.v+(drag.y-e.clientY)/(e.shiftKey?600:160)*(E.b.max-E.b.min))});
+  dial.addEventListener('pointermove',e=>{if(drag)put(drag.v+(drag.y-e.clientY)/(e.shiftKey?(E.b.span||160)*3.5:(E.b.span||160))*(E.b.max-E.b.min))});
   const end=()=>{drag=null};dial.addEventListener('pointerup',end);dial.addEventListener('pointercancel',end);
   dial.addEventListener('keydown',e=>{if(!E.b)return;const st=E.b.step||(E.b.max-E.b.min)/(e.shiftKey?10:50);if(e.key==='ArrowUp'||e.key==='ArrowRight'){e.preventDefault();e.stopPropagation();put(E.b.get()+st)}else if(e.key==='ArrowDown'||e.key==='ArrowLeft'){e.preventDefault();e.stopPropagation();put(E.b.get()-st)}});
   dial.addEventListener('wheel',e=>{if(!E.b)return;e.preventDefault();put(E.b.get()+(e.deltaY<0?1:-1)*(E.b.step||(E.b.max-E.b.min)/60))},{passive:false});
@@ -1396,34 +1633,44 @@ function jEncSync(){if(!JAM.encs.length)return;const B=encBindings();JAM.encs.fo
 
 /* page keys, vowel keys, utility */
 function jKey(txt,col,fn,attrs={}){const b=el('button',Object.assign({class:'jk',style:'--k:var('+col+')'},attrs),el('span',{class:'led'}),document.createTextNode(txt));if(fn)b.addEventListener('click',fn);return b}
-function buildModes(){$('#jModes').replaceChildren(...J_MODES.map(([k,c])=>jKey(k,c,()=>setMode(k),{'aria-pressed':String(JAM.mode===k)})))}
-function setMode(k){JAM.mode=k;store.set('jam-mode',k);JAM.drag=null;buildModes();renderCtx();jEncSync();const lab={sing:'screen: hold and drag to sing; left-right moves the tongue, near-far opens the mouth',shape:'screen: drag the four formant handles; across is pitch, up-down is level',seq:'screen: sixteen steps; tap to switch a step on or off, drag it up or down to change its note',talk:'screen: the phrase as formant tracks; tap to say it'}[k];JAM.cv.setAttribute('aria-label',lab)}
+function buildModes(){const mk=([k,c])=>jKey(k,c,()=>setMode(k),{'aria-pressed':String(JAM.mode===k)});$('#jPerform').replaceChildren(...J_PERFORM.map(mk));$('#jSoundPages').replaceChildren(...J_SOUND.map(mk))}
+function setMode(k){if(isVoicePage(k)!==isVoicePage(JAM.mode)&&!JAM.lock)jReleaseAll();JAM.mode=k;store.set('jam-mode',k);JAM.drag=null;JAM.hist=[];buildModes();renderCtx();jEncSync();const lab={sing:'screen: hold and drag to sing; left-right moves the tongue, near-far opens the mouth',shape:'screen: drag the four formant handles; across is pitch, up-down is level',seq:'screen: sixteen steps; tap to switch a step on or off, drag it up or down to change its note',talk:'screen: the phrase as formant tracks; tap to say it',voices:'screen: the eight operators as hills by frequency; drag one across for pitch, up or down for level',wiring:'screen: the algorithm; tap a voice to pick it',env:'screen: the envelope over time; hold to hear it',filter:'screen: the filter curve; drag the peak across for cutoff, up for resonance',move:'screen: the two LFOs and where they go; tap a lane to pick it, hold to hear it'}[k];JAM.cv.setAttribute('aria-label',lab)}
 function pressable(b,down,up){b.addEventListener('pointerdown',e=>{b.setPointerCapture(e.pointerId);b.dataset.on='1';down();e.preventDefault()});const u=()=>{if(b.dataset.on!=='1')return;b.dataset.on='0';up()};b.addEventListener('pointerup',u);b.addEventListener('pointercancel',u);
   b.addEventListener('keydown',e=>{if((e.key===' '||e.key==='Enter')&&!e.repeat){e.preventDefault();e.stopPropagation();b.dataset.on='1';down()}});b.addEventListener('keyup',e=>{if(e.key===' '||e.key==='Enter'){e.stopPropagation();u()}});return b}
 function buildVowels(){$('#jVowels').replaceChildren(...'aeiou'.split('').map(ch=>{const V0=VOWELS.find(q=>q[0]===ch),b=el('button',{class:'jk jv',style:'--k:var('+JV[ch]+')','aria-label':'vowel '+ch,'aria-pressed':'false'},el('span',{class:'led'}),document.createTextNode(ch));
-  return pressable(b,()=>{const st=JAM.seq.steps[JAM.sel];if(JAM.mode==='seq'&&st&&st.on){st.x=V0[1];st.y=V0[2];saveSeq()}animateMouth({x:V0[1],y:V0[2]},120);if(!(JAM.mode==='seq'&&JAM.playing))jamHold('v'+ch,JAM.lastNote)},()=>jamRelease('v'+ch))}))}
+  return pressable(b,()=>{if(isVoicePage(JAM.mode)){animateMouth({x:V0[1],y:V0[2]},0);jVoiceDown(JAM.lastNote);return}const st=JAM.seq.steps[JAM.sel];if(JAM.mode==='seq'&&st&&st.on){st.x=V0[1];st.y=V0[2];saveSeq()}animateMouth({x:V0[1],y:V0[2]},120);if(!(JAM.mode==='seq'&&JAM.playing))jamHold('v'+ch,JAM.lastNote)},()=>{if(isVoicePage(JAM.mode))jVoiceUp(JAM.lastNote);else jamRelease('v'+ch)})}))}
 function setOct(o){JAM.oct=clamp(o,-2,2);store.set('jam-oct',JAM.oct);buildPiano()}
-function syncUtil(){$('#jScale b').textContent=J_SCALES[JAM.scale][0];$('#jLink').setAttribute('aria-pressed',String(!!M.out));$('#jMled').dataset.on=M.out?'1':'0'}
+function syncUtil(){$('#jScale b').textContent=J_SCALES[JAM.scale][0];$('#jLink').setAttribute('aria-pressed',String(!!M.out));$('#jMled').dataset.on=M.out?'1':'0';$('#jShift').setAttribute('aria-pressed',String(JAM.shift));$('#jLock').setAttribute('aria-pressed',String(JAM.lock))}
 $('#jOctD').onclick=()=>setOct(JAM.oct-1);$('#jOctU').onclick=()=>setOct(JAM.oct+1);
 $('#jScale').onclick=()=>{JAM.scale=(JAM.scale+1)%J_SCALES.length;store.set('jam-scale',JAM.scale);buildPiano();syncUtil()};
+$('#jRand').onclick=jRand;$('#jLock').onclick=()=>setLock(!JAM.lock);
+{const b=$('#jShift');let t0=0,was=false;b.addEventListener('pointerdown',e=>{b.setPointerCapture(e.pointerId);t0=performance.now();was=JAM.shift;setShift(true);e.preventDefault()});
+  const up=()=>{if(!t0)return;const held=performance.now()-t0>380;t0=0;setShift(held?false:!was)};b.addEventListener('pointerup',up);b.addEventListener('pointercancel',up);
+  b.addEventListener('keydown',e=>{if(e.key===' '||e.key==='Enter'){e.preventDefault();e.stopPropagation();setShift(!JAM.shift)}})}
 $('#jLink').onclick=async()=>{if(!M.access)await connectMIDI();syncUtil();jToast(M.out?'linked':'no midi in this view')};
 
 /* keyboard */
 function buildPiano(){const one=matchMedia('(max-width:640px)').matches,octs=one?1:2,box=$('#jPiano');box.style.setProperty('--n',7*octs);const keys=[];
-  for(let o=0;o<octs;o++){[0,2,4,5,7,9,11].forEach((sm,w)=>keys.push(pkey('pw',jBase()+o*12+sm,o*7+w)));[[1,0],[3,1],[6,3],[8,4],[10,5]].forEach(([sm,w])=>keys.push(pkey('pb',jBase()+o*12+sm,o*7+w)))}
+  for(let o=0;o<octs;o++){[0,2,4,5,7,9,11].forEach((sm,w)=>keys.push(pkey('pw',jBase()+o*12+sm,o*7+w,o*7+w)));[[1,0],[3,1],[6,3],[8,4],[10,5]].forEach(([sm,w])=>keys.push(pkey('pb',jBase()+o*12+sm,o*7+w)))}
   box.replaceChildren(...keys);$('#jOct').textContent=(JAM.oct>0?'+':'')+JAM.oct}
-function pkey(cls,n,w){const b=el('button',{class:cls,'data-n':n,'data-in':inScale(n)?'1':'0','data-on':'0',style:'--w:'+w,'aria-label':'play '+noteName(n)},el('i'),n%12===0?el('span',{text:noteName(n)}):null);
-  b.addEventListener('pointerdown',e=>{b.setPointerCapture(e.pointerId);keyDown(n);e.preventDefault()});const up=()=>keyUp(n);b.addEventListener('pointerup',up);b.addEventListener('pointercancel',up);
-  b.addEventListener('keydown',e=>{if((e.key===' '||e.key==='Enter')&&!e.repeat){e.preventDefault();e.stopPropagation();keyDown(n)}});b.addEventListener('keyup',e=>{if(e.key===' '||e.key==='Enter'){e.stopPropagation();keyUp(n)}});return b}
+function pkey(cls,n,w,wi=-1){const b=el('button',{class:cls,'data-n':n,'data-in':inScale(n)?'1':'0','data-on':'0',style:'--w:'+w,'aria-label':'play '+noteName(n)},el('i'),n%12===0?el('span',{text:noteName(n)}):null);
+  b.addEventListener('pointerdown',e=>{b.setPointerCapture(e.pointerId);keyDown(n,wi);e.preventDefault()});const up=()=>keyUp(n);b.addEventListener('pointerup',up);b.addEventListener('pointercancel',up);
+  b.addEventListener('keydown',e=>{if((e.key===' '||e.key==='Enter')&&!e.repeat){e.preventDefault();e.stopPropagation();keyDown(n,wi)}});b.addEventListener('keyup',e=>{if(e.key===' '||e.key==='Enter'){e.stopPropagation();keyUp(n)}});return b}
 const keyEl=n=>document.querySelector('#jPiano [data-n="'+n+'"]');
-function keyDown(n){JAM.lastNote=n;const k=keyEl(n);if(k)k.dataset.on='1';
+function keyDown(n,wi=-1){const k=keyEl(n);if(k)k.dataset.on='1';
+  /* shift + the first eight white keys pick a voice on the pages that edit one */
+  if(JAM.shift&&wi>=0&&wi<8&&['voices','wiring','move'].includes(JAM.mode)||JAM.shift&&wi>=0&&wi<8&&JAM.mode==='env'&&!JAM.envAll){JAM.skip.add(n);jSelOp(wi);jToast((JAM.vn==='v'?'v':'n')+(wi+1));return}
+  JAM.lastNote=n;
+  if(isVoicePage(JAM.mode)){jVoiceDown(n);return}
+  if(JAM.lock){for(const h of [...JAM.holds])if(h[0]==='k'&&h!=='k'+n)JAM.holds.delete(h)}
   if(JAM.mode==='seq'&&JAM.rec){const st=JAM.seq.steps[JAM.cursor];Object.assign(st,{on:true,n,x:S.mouth.x,y:S.mouth.y});JAM.sel=JAM.cursor;JAM.cursor=(JAM.cursor+1)%JAM.seq.len;saveSeq()}
   jamHold('k'+n,n)}
-function keyUp(n){const k=keyEl(n);if(k)k.dataset.on='0';jamRelease('k'+n)}
+function keyUp(n){const k=keyEl(n);if(k)k.dataset.on='0';if(JAM.skip.delete(n))return;if(JAM.vkeys.includes(n)){jVoiceUp(n);return}if(JAM.lock)return;jamRelease('k'+n)}
 const J_KEYMAP='awsedftgyhujkolp;';const jHeld=new Map();
 addEventListener('keydown',e=>{if(!S.kids)return;const tg=e.target.tagName;if(tg==='INPUT'||tg==='TEXTAREA'||tg==='SELECT'||e.ctrlKey||e.metaKey||e.altKey||e.repeat)return;const k=e.key.toLowerCase();
   if(k===' '&&tg!=='BUTTON'){e.preventDefault();JAM.playing?seqStop():seqStart();return}
   if(k==='z'){setOct(JAM.oct-1);return}if(k==='x'){setOct(JAM.oct+1);return}
+  if(/^[1-8]$/.test(k)&&isVoicePage(JAM.mode)){e.preventDefault();jSelOp(+k-1);return}
   const i=J_KEYMAP.indexOf(k);if(i<0)return;e.preventDefault();const n=jBase()+i;jHeld.set(k,n);keyDown(n)});
 addEventListener('keyup',e=>{if(!S.kids)return;const k=e.key.toLowerCase();if(jHeld.has(k)){keyUp(jHeld.get(k));jHeld.delete(k)}});
 
@@ -1434,14 +1681,29 @@ function slotKey(i){const b=jKey('m'+(i+1),'--j-orange',null,{'aria-pressed':Str
   b.addEventListener('pointerdown',()=>{long=false;t=setTimeout(()=>{long=true;storeSlot(i)},550)});b.addEventListener('pointerup',()=>{clearTimeout(t);if(!long)recallSlot(i)});b.addEventListener('pointercancel',()=>clearTimeout(t));
   b.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();e.stopPropagation();e.shiftKey?storeSlot(i):recallSlot(i)}});return b}
 function renderCtx(){const c=$('#jCtx'),m=JAM.mode;
-  if(m==='sing')c.replaceChildren(...[0,1,2,3].map(slotKey),jKey('rand','--j-violet',()=>animateMouth({x:Math.random(),y:Math.random(),throat:12+Math.random()*10,bright:Math.random()*60-30,width:14+Math.random()*30},380)),el('span',{class:'k-label j-hint',text:'tap m to recall · hold to store'}));
+  const sm=(txt,col,fn,attrs={})=>{const b=jKey(txt,col,fn,attrs);b.classList.add('sm');return b};
+  if(isVoicePage(m)){renderSoundCtx(c,m,sm);return}
+  if(m==='sing')c.replaceChildren(...[0,1,2,3].map(slotKey),el('span',{class:'k-label j-hint',text:'tap m to recall · hold to store'}));
   else if(m==='shape')c.replaceChildren(...[0,1,2,3].map(i=>jKey('f'+(i+1),'--j-lime',()=>{JAM.fsel=i;renderCtx();jEncSync()},{'aria-pressed':String(JAM.fsel===i)})),
-    jKey('flat','--j-white',()=>{S.mouth.fo=[0,0,0,0];S.mouth.lo=[0,0,0,0];S.mouth.wo=[0,0,0,0];applyMouth();jEncSync()}),
-    jKey('rand','--j-violet',()=>{S.mouth.fo=S.mouth.fo.map(()=>Math.round(Math.random()*14-7));S.mouth.lo=S.mouth.lo.map(()=>Math.round(Math.random()*12-8));S.mouth.wo=S.mouth.wo.map(()=>Math.round(Math.random()*20-5));applyMouth();jEncSync()}));
+    jKey('flat','--j-white',()=>{S.mouth.fo=[0,0,0,0];S.mouth.lo=[0,0,0,0];S.mouth.wo=[0,0,0,0];applyMouth();jEncSync()}),el('span',{class:'k-label j-hint',text:'drag a handle on the screen'}));
   else if(m==='seq')c.replaceChildren(jKey('play','--j-lime',()=>JAM.playing?seqStop():seqStart(),{'aria-pressed':String(JAM.playing)}),jKey('rec','--j-red',()=>{JAM.rec=!JAM.rec;renderCtx()},{'aria-pressed':String(JAM.rec)}),
-    jKey('clear','--j-white',()=>{JAM.seq.steps.forEach(st=>st.on=false);saveSeq()}),jKey('rand','--j-violet',seqRandom),el('span',{class:'k-label j-hint',text:JAM.rec?'rec · keys write steps':'space plays · vowel keys paint a step'}));
+    jKey('clear','--j-white',()=>{JAM.seq.steps.forEach(st=>st.on=false);saveSeq()}),el('span',{class:'k-label j-hint',text:JAM.rec?'rec · keys write steps':'space plays · vowel keys paint a step'}));
   else{const inp=el('input',{type:'text',id:'jWord',maxlength:32,value:store.get('jam-word','ciao luca'),autocomplete:'off',spellcheck:'false','aria-label':'text to say'});
     inp.addEventListener('input',()=>store.set('jam-word',inp.value));inp.addEventListener('keydown',e=>{if(e.key==='Enter')jSay()});c.replaceChildren(inp,jKey('say','--j-lime',jSay))}}
+
+function renderSoundCtx(c,m,sm){const v=S.voice,o=JAM.op,hint=t=>el('span',{class:'k-label j-hint',text:t});
+  if(m==='voices'){const keys=[...Array(8)].map((_,i)=>{const lv=v.get(JAM.vn==='v'?V.tl:N.tl,i);const b=sm((JAM.vn==='v'?'v':'n')+(i+1),'--j-amber',()=>jSelOp(i),{'aria-pressed':String(i===o),'aria-label':(JAM.vn==='v'?'voiced ':'noise ')+(i+1)+(lv?'':', silent')});if(!lv)b.style.opacity='.55';return b});
+    if(JAM.shift)c.replaceChildren(...keys,sm('copy','--j-white',opCopy),sm('paste','--j-white',opPaste,{'aria-pressed':String(!!JAM.clip)}),sm('init','--j-red',opInit),...(JAM.vn==='v'?[sm('fixed','--j-white',opFixed,{'aria-pressed':String(vIsFixed(v,o))})]:[]),hint('shift turns every knob over'));
+    else c.replaceChildren(...keys,sm('sing','--j-amber',()=>{JAM.vn='v';renderCtx();jEncSync()},{'aria-pressed':String(JAM.vn==='v'),title:'voiced operators'}),sm('hiss','--j-white',()=>{JAM.vn='n';renderCtx();jEncSync()},{'aria-pressed':String(JAM.vn==='n'),title:'noise operators'}),
+      sm('solo','--j-lime',()=>{toggleSolo(JAM.vn,o);if(voiceNodes&&JAM.vnote!=null)noteOn(JAM.vnote);renderCtx()},{'aria-pressed':String(CH.solo===JAM.vn+o)}),hint('shift + keys 1–8 picks a voice'))}
+  else if(m==='wiring')c.replaceChildren(...[['suggested','suggested','--j-lime'],['all','all','--j-white'],['parallel','parallel','--j-white'],['stacks','stacks','--j-white'],['feedback','with feedback','--j-orange']].map(([l,k,col])=>sm(l,col,()=>{JAM.algF=k;renderCtx();jEncSync()},{'aria-pressed':String(JAM.algF===k)})),
+    sm('solo v'+(o+1),'--j-white',()=>{toggleSolo('v',o);if(voiceNodes&&JAM.vnote!=null)noteOn(JAM.vnote);renderCtx()},{'aria-pressed':String(CH.solo==='v'+o)}),hint('tap a voice to pick it'));
+  else if(m==='env'){const T=JAM.envT,tk=['amp','pitch','formant','filter'].map(k=>sm(k,'--j-cyan',()=>{JAM.envT=k;renderCtx();jEncSync()},{'aria-pressed':String(T===k)}));
+    const per=T==='amp'||T==='formant';c.replaceChildren(...tk,...(per?[sm('all voices','--j-white',()=>{JAM.envAll=true;renderCtx();jEncSync()},{'aria-pressed':String(JAM.envAll)}),sm((JAM.vn==='v'?'v':'n')+(o+1)+' only','--j-amber',()=>{JAM.envAll=false;renderCtx();jEncSync()},{'aria-pressed':String(!JAM.envAll)})]:[]),
+      hint(JAM.shift?(T==='amp'?'hold · time scale · velocity · peak':T==='formant'?'velocity · bias · lfo · time scale':'start/peak · end · velocity · scale'):'shift: more of the envelope'))}
+  else if(m==='filter')c.replaceChildren(...['lp 24','lp 18','lp 12','hp','bp','notch'].map((l,i)=>sm(l,'--j-violet',()=>{jSet(C.fType,0,i);renderCtx();jEncSync()},{'aria-pressed':String(v.get(C.fType)===i)})),hint('drag the peak on the screen'));
+  else{const L=JAM.lfo,wk=L?C.l2w:C.l1w,sk=L?C.l2k:C.l1k;c.replaceChildren(sm('lfo 1','--j-orange',()=>{JAM.lfo=0;renderCtx();jEncSync()},{'aria-pressed':String(L===0)}),sm('lfo 2','--j-violet',()=>{JAM.lfo=1;renderCtx();jEncSync()},{'aria-pressed':String(L===1)}),
+    ...['tri','saw','ramp','square','sine','s+h'].map((l,i)=>sm(l,L?'--j-violet':'--j-orange',()=>{jSet(wk,0,i);renderCtx()},{'aria-pressed':String(v.get(wk)===i),title:LFO_WAVES[i]})),sm('sync','--j-white',()=>{jSet(sk,0,v.get(sk)?0:1);renderCtx()},{'aria-pressed':String(!!v.get(sk)),title:'restart with every note'}))}}
 
 /* sequencer */
 function seqStart(){if(JAM.playing)return;audio();JAM.playing=true;JAM.step=-1;JAM.next=performance.now()+30;JAM.holds.add('seq');seqTick();if(JAM.mode==='seq')renderCtx()}
@@ -1514,6 +1776,11 @@ function drawJam(now){const cv=JAM.cv;if(!S.kids||!cv.width)return;const g=cv.ge
       else{g.fillStyle=inLen?jc('--j-faint'):'#1a1a20';g.beginPath();g.arc(x,G.floor-6*d,2.2*d,0,7);g.fill()}}
     if(JAM.rec){const x=G.x0+G.cw*JAM.cursor;g.fillStyle=jc('--j-red');glow(jc('--j-red'),8);g.fillRect(x+3*d,G.floor+30*d,G.cw-6*d,2.5*d);noglow()}
     const st=q.steps[JAM.sel];g.font=font(10);g.textAlign='right';g.textBaseline='top';g.fillStyle=jc('--j-white');g.fillText((JAM.playing?'▶ ':'■ ')+(JAM.step>=0?'step '+(JAM.step+1):'stopped')+(st&&st.on?'  ·  sel '+noteName(st.n)+' '+vowelOf(st.x,st.y):''),W-10*d,30*d)}
+  else if(mode==='voices')drawVoices(g,W,H,d,font,glow,noglow);
+  else if(mode==='wiring')drawWiring(g,W,H,d,font,glow,noglow);
+  else if(mode==='env')drawEnv(g,W,H,d,font,glow,noglow);
+  else if(mode==='filter')drawFilter(g,W,H,d,font,glow,noglow);
+  else if(mode==='move')drawMove(g,W,H,d,font,glow,noglow,now);
   else{const f=S.fseq,G={x0:W*.05,x1:W*.95,t:H*.26,b:H-60*d};
     if(f){const end=Math.max(1,f.get14(0x1E)),X=k=>G.x0+k/end*(G.x1-G.x0),Y=hz=>G.b-Math.log(clamp(hz,150,6000)/150)/Math.log(40)*(G.b-G.t);
       for(const hz of [250,500,1000,2000,4000]){g.strokeStyle='rgba(180,140,255,.08)';g.lineWidth=d;g.beginPath();g.moveTo(G.x0,Y(hz));g.lineTo(G.x1,Y(hz));g.stroke()}
@@ -1525,10 +1792,11 @@ function drawJam(now){const cv=JAM.cv;if(!S.kids||!cv.width)return;const g=cv.ge
     const w=((($('#jWord')||{}).value)||store.get('jam-word','ciao luca')).toLowerCase();g.font=font(Math.min(30,Math.max(16,W/d/(w.length+4))),800);g.textAlign='left';g.textBaseline='top';g.fillStyle=jc('--j-violet');glow(jc('--j-violet'),12);g.fillText(w||'—',G.x0,30*d);noglow()}
   /* top bar */
   g.font=font(10,800);g.textAlign='left';g.textBaseline='top';g.fillStyle=modeCol;glow(modeCol,8);g.beginPath();g.arc(14*d,15*d,3*d,0,7);g.fill();g.fillText(mode.toUpperCase(),24*d,10*d);noglow();
+  {let bx=24*d+g.measureText(mode.toUpperCase()).width+10*d;for(const [on,t,c] of [[JAM.shift,'SHIFT','--j-white'],[JAM.lock,'LOCK '+noteName(JAM.vnote??JAM.lastNote),'--j-amber']])if(on){g.font=font(9,800);const tw=g.measureText(t).width+10*d;g.strokeStyle=jc(c);g.lineWidth=d;g.strokeRect(bx,8*d,tw,15*d);g.fillStyle=jc(c);g.fillText(t,bx+5*d,11*d);bx+=tw+6*d}}
   g.font=font(10);g.fillStyle=jc('--j-dim');g.textAlign='right';g.fillText(noteName(JAM.lastNote)+'  ·  '+nv+'  ·  '+(M.out?'fs1r':'preview')+(JAM.rec&&mode==='seq'?'  ·  REC':''),W-10*d,10*d);
   /* encoder strip: what the four knobs do right now */
   const B=encBindings(),sy=H-30*d,cw=W/4;g.fillStyle='rgba(255,255,255,.03)';g.fillRect(0,sy,W,30*d);
-  B.forEach((b,i)=>{const col=jc(ENC_COL[i]),x=cw*i+10*d;g.fillStyle=col;g.fillRect(x,sy+9*d,4*d,12*d);g.font=font(8.5,600);g.textAlign='left';g.textBaseline='top';g.fillStyle=jc('--j-dim');g.fillText(b.label.toUpperCase(),x+9*d,sy+5*d);g.font=font(10.5,700);g.fillStyle=jc('--j-white');g.fillText(b.fmt(b.get()),x+9*d,sy+16*d)});
+  B.forEach((b,i)=>{const col=jc(ENC_COL[i]),x=cw*i+10*d;g.fillStyle=col;g.fillRect(x,sy+9*d,4*d,12*d);g.font=font(8.5,600);g.textAlign='left';g.textBaseline='top';g.fillStyle=jc('--j-dim');let lb=b.label.toUpperCase();while(lb.length>3&&g.measureText(lb).width>cw-16*d)lb=lb.slice(0,-1);g.fillText(lb===b.label.toUpperCase()?lb:lb.slice(0,-1)+'…',x+9*d,sy+5*d);g.font=font(10.5,700);g.fillStyle=jc('--j-white');g.fillText(b.fmt(b.get()),x+9*d,sy+16*d)});
   if(JAM.toast&&now<JAM.toast.until){g.font=font(W/d<420?10:12,700);const tw=g.measureText(JAM.toast.t).width+24*d;g.fillStyle='rgba(2,2,5,.85)';g.fillRect(W/2-tw/2,H/2-16*d,tw,32*d);g.strokeStyle=modeCol;g.lineWidth=d;g.strokeRect(W/2-tw/2,H/2-16*d,tw,32*d);g.fillStyle=jc('--j-white');g.textAlign='center';g.textBaseline='middle';g.fillText(JAM.toast.t,W/2,H/2)}
   g.textAlign='left';g.textBaseline='top';
   if(nv!==JAM.nv){JAM.nv=nv;document.querySelectorAll('#jVowels .jv').forEach(b=>b.setAttribute('aria-pressed',String(b.getAttribute('aria-label')==='vowel '+nv)));$('#jPiano').style.setProperty('--k',`var(${JV[nv]})`)}
@@ -1541,22 +1809,34 @@ JAM.cv.addEventListener('pointerdown',e=>{const [X,Y,d,W,H]=jPos(e);JAM.cv.setPo
     if(best<0){let bx=1e9;hs.forEach(([hx],i)=>{if(Math.abs(hx-X)<bx){bx=Math.abs(hx-X);best=i}})}if(best<0)return;JAM.fsel=best;renderCtx();JAM.drag={kind:'shape'};shapeDrag(X,Y,W,H,d);jamHold('scr',JAM.lastNote)}
   else if(mode==='seq'){const G=SEQG(W,H,d),c=Math.floor((X-G.x0)/G.cw);if(c<0||c>15)return;const st=JAM.seq.steps[c];JAM.sel=c;JAM.cursor=c;JAM.drag={kind:'seq',c,moved:false,wasOn:st.on,y0:Y};
     if(!st.on){Object.assign(st,{on:true,n:JAM.lastNote,x:S.mouth.x,y:S.mouth.y});saveSeq()}if(!JAM.playing){animateMouth({x:st.x,y:st.y},80);jamHold('sq',st.n)}}
+  else if(mode==='voices'){let best=null,bd=1e9;for(const [hx,hy,t,o] of JAM.hits){const dd=Math.hypot(hx-X,(hy-Y)*.5);if(dd<bd){bd=dd;best=[t,o]}}if(!best)return;
+    JAM.op=best[1];JAM.vn=best[0];store.set('jam-op',JAM.op);renderCtx();JAM.drag={kind:'voices',t:best[0],o:best[1],X,Y,hz:opHz(best[0],best[1]),tl:S.voice.get(opDefs(best[0]).tl,best[1]),play:true};jVoiceDown(JAM.lastNote)}
+  else if(mode==='wiring'){let best=-1,bd=40*d;for(const [hx,hy,,o] of JAM.hits){const dd=Math.hypot(hx-X,hy-Y);if(dd<bd){bd=dd;best=o}}if(best>=0){jSelOp(best,'v');jToast('v'+(best+1)+' · '+opRole(S.voice.get(C.alg),best))}}
+  else if(mode==='filter'){JAM.drag={kind:'filter',play:true};filterDrag(X,Y,W,H,d);jVoiceDown(JAM.lastNote)}
+  else if(mode==='env'){JAM.drag={kind:'audition',play:true};jVoiceDown(JAM.lastNote)}
+  else if(mode==='move'){const l=Y<(moveLanes(W,H,d)[0][1]+moveLanes(W,H,d)[1][0])/2?0:1;if(Y<moveLanes(W,H,d)[1][1]+8*d&&l!==JAM.lfo){JAM.lfo=l;renderCtx()}JAM.drag={kind:'audition',play:true};jVoiceDown(JAM.lastNote)}
   else{jSay()}
   jEncSync()});
+function filterDrag(X,Y,W,H,d){const G=JAM.filterG(W,H,d),hz=G.lo*Math.pow(G.hi/G.lo,clamp((X-G.x0)/(G.x1-G.x0),0,1))/keyTrack(S.voice,JAM.lastNote);
+  jSet(C.fCut,0,127/10*Math.log2(Math.max(20,hz)/20));jSet(C.fRes,0,16+clamp((G.b-Y)/(G.b-G.t),0,1)*100);jEncSync()}
+function voicesDrag(D,X,Y,W,H,d){const G=VG(W,H,d);setOpHz(D.t,D.o,D.hz*Math.pow(2,(X-D.X)/(G.x1-G.x0)*Math.log2(G.hi/G.lo)));
+  jSet(opDefs(D.t).tl,D.o,clamp(D.tl+(D.Y-Y)/(G.b-G.t)*(G.Y(-60)-G.Y(3))/(G.b-G.t)*84,0,99));jEncSync()}
 function shapeDrag(X,Y,W,H,d){const G=shapeGeom(W,H,d),m=S.mouth,i=JAM.fsel,base=mouthBase(m)[i],L=mouthLevels(m);
   m.fo[i]=clamp(12*Math.log2(G.HZ(X)/base),-24,24);const voiced=Math.pow(1-m.breath/100,.7),baseDb=MOUTH_LEVELS[i]+m.bright*.12*i+20*Math.log10(Math.max(voiced,1e-4));
   m.lo[i]=clamp(G.DB(Y)-baseDb,-30,12);applyMouth();jEncSync()}
 JAM.cv.addEventListener('pointermove',e=>{const D=JAM.drag;if(!D)return;const [X,Y,d,W,H]=jPos(e);
   if(D.kind==='sing'){const [u,v]=unproj(X,Y,W,H,d);S.mouth.x=u;S.mouth.y=v;applyMouth();jEncSync()}
   else if(D.kind==='shape')shapeDrag(X,Y,W,H,d);
+  else if(D.kind==='voices')voicesDrag(D,X,Y,W,H,d);
+  else if(D.kind==='filter')filterDrag(X,Y,W,H,d);
   else if(D.kind==='seq'){if(Math.abs(Y-D.y0)>6*d)D.moved=true;if(!D.moved)return;const G=SEQG(W,H,d),st=JAM.seq.steps[D.c],n=snapScale(clamp(nOfY(Y,G),G.lo,G.hi));if(n!==st.n){st.n=n;JAM.lastNote=n;if(!JAM.playing)voiceOn(n)}}});
-const jUp=()=>{const D=JAM.drag;JAM.drag=null;if(!D)return;if(D.kind==='seq'){if(!D.moved&&D.wasOn)JAM.seq.steps[D.c].on=false;saveSeq();jamRelease('sq')}else jamRelease('scr')};
+const jUp=()=>{const D=JAM.drag;JAM.drag=null;if(!D)return;if(D.play){jVoiceUp(JAM.lastNote);return}if(D.kind==='seq'){if(!D.moved&&D.wasOn)JAM.seq.steps[D.c].on=false;saveSeq();jamRelease('sq')}else jamRelease('scr')};
 JAM.cv.addEventListener('pointerup',jUp);JAM.cv.addEventListener('pointercancel',jUp);
 JAM.cv.addEventListener('keydown',e=>{if(JAM.mode!=='sing')return;const st=e.shiftKey?.1:.03,k={ArrowLeft:[-st,0],ArrowRight:[st,0],ArrowUp:[0,-st],ArrowDown:[0,st]}[e.key];if(!k)return;e.preventDefault();e.stopPropagation();S.mouth.x=clamp(S.mouth.x+k[0],0,1);S.mouth.y=clamp(S.mouth.y+k[1],0,1);applyMouth();jEncSync()});
 matchMedia('(max-width:640px)').addEventListener('change',()=>{if(S.kids)buildPiano()});
 function setKids(on){S.kids=on;document.body.classList.toggle('k-hide-adult',on);$('#kids').hidden=!on;store.set('fs1r-kids',on);
   if(on){JAM.cc={};buildPiano();setMode(JAM.mode);syncUtil();requestAnimationFrame(()=>{sizeCanvases();cancelAnimationFrame(JAM.raf);JAM.raf=requestAnimationFrame(jamLoop)})}
-  else{if(JAM.playing)seqStop();JAM.holds.clear();voiceOffIfIdle();requestAnimationFrame(()=>{sizeCanvases();refresh()})}}
+  else{if(JAM.playing)seqStop();JAM.lock=false;JAM.shift=false;jReleaseAll();JAM.holds.clear();voiceOffIfIdle();requestAnimationFrame(()=>{sizeCanvases();refresh()})}}
 buildEncs();buildVowels();
 $('#kidsBtn').onclick=()=>setKids(true);$('#kExit').onclick=()=>setKids(false);
 
@@ -1572,10 +1852,10 @@ let topNote=null;
 function midiNote(n,on){if(!M.out)return;const ch=noteCh();sendRaw(Uint8Array.from(on?[0x90|ch,n,100]:[0x80|ch,n,0]),(on?'note on ':'note off ')+noteName(n)+' · ch '+(ch+1))}
 function playDown(n){if(topNote!=null)midiNote(topNote,false);topNote=n;midiNote(n,true);noteOn(n)}
 function playUp(){if(topNote!=null){midiNote(topNote,false);topNote=null}noteOff()}
-function panic(){held.clear();topNote=null;noteOff(true);MP.down=false;MP.keys.clear();jHeld.clear();JAM.holds.clear();if(JAM.playing)seqStop();if(FS.play)stopFseq();stopSing();singUI();MO.liveNote=null;MP.hwNote=null;
+function panic(){held.clear();topNote=null;JAM.vkeys=[];JAM.vnote=null;JAM.lock=false;JAM.skip.clear();if(S.kids)syncUtil();noteOff(true);MP.down=false;MP.keys.clear();jHeld.clear();JAM.holds.clear();if(JAM.playing)seqStop();if(FS.play)stopFseq();stopSing();singUI();MO.liveNote=null;MP.hwNote=null;
   if(GEST.on)stopGesture();document.querySelectorAll('#jPiano [data-on="1"],#mpKeys [data-on="1"],#jVowels [data-on="1"]').forEach(b=>b.dataset.on='0');
   if(M.out){for(let ch=0;ch<16;ch++){try{M.out.send(Uint8Array.from([0xB0|ch,120,0]));M.out.send(Uint8Array.from([0xB0|ch,123,0]))}catch(e){}}logMsg('→',Uint8Array.from([0xB0,123,0]),'all sound off + all notes off, 16 channels')}}
-function releaseHeld(){if(held.size||topNote!=null){held.clear();playUp()}MP.down=false;MP.keys.clear();for(const [,n] of jHeld)keyUp(n);jHeld.clear();
+function releaseHeld(){if(held.size||topNote!=null){held.clear();playUp()}if(!JAM.lock)jVoiceOff();MP.down=false;MP.keys.clear();for(const [,n] of jHeld)keyUp(n);jHeld.clear();
   for(const h of [...JAM.holds])if(h!=='seq')JAM.holds.delete(h);document.querySelectorAll('#jPiano [data-on="1"],#mpKeys [data-on="1"],#jVowels [data-on="1"]').forEach(b=>b.dataset.on='0');voiceOffIfIdle()}
 addEventListener('blur',releaseHeld);document.addEventListener('visibilitychange',()=>{if(document.hidden)releaseHeld()});
 addEventListener('keydown',e=>{if(e.key==='Escape'){panic()}});

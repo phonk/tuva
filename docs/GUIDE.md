@@ -78,7 +78,20 @@ To push a whole voice to the synth, use **Send voice to part**. To play from the
 
 **midi** — Connection, dumps, and the SysEx traffic log.
 
-**jam mode** (button in the top bar) — A self-contained instrument: four pages (sing, shape, seq, talk), four knobs whose job is printed at the bottom of the screen, a two-octave keyboard. Space starts the sequencer; `a w s e d f t g y h u j k` play notes, `z` and `x` change octave.
+**jam mode** (button in the top bar) — A self-contained instrument for the whole synth. Two rows of pages: **perform** (sing, seq, talk) plays the mouth; **sound** (voices, wiring, shape, env, filter, move) reaches the rest of the voice. Four knobs whose job is printed at the bottom of the screen, a two-octave keyboard. Space starts the sequencer; `a w s e d f t g y h u j k` play notes, `z` and `x` change octave, `1`–`8` pick a voice on the sound pages.
+
+- **voices** — the eight operators as hills by frequency (noise operators dashed). Drag a hill across for pitch, up or down for level; knobs: pitch, level, width, form. *sing* / *hiss* switch between voiced and noise operators, *solo* listens to one.
+- **wiring** — the algorithm drawn large, carriers on the OUT line, the feedback ring. Knobs: algorithm, feedback, out trim of the selected voice, browse (through *suggested*, *all*, *parallel*, *stacks* or *feedback*).
+- **env** — the envelope as a·d·s·r, with each voice's own envelope as a ghost. Targets: amp, pitch, formant (each voice's frequency envelope), filter; amp and formant reach all sounding voices or only the selected one. Hold the screen to hear it.
+- **filter** — the filter curve over what the voice sends in. Drag the peak: across for cutoff, up for resonance. Knobs: cutoff, resonance, env amount, key track; keys pick the type. On the FS1R the first filter edit also turns the part's filter switch on, since without it the synth does not filter.
+- **move** — the two LFOs and the meters of where they go. LFO 1: speed, wobble (pitch), pulse (level), sweep (formants); LFO 2: speed, phase, filter. Keys pick the wave and key sync.
+- **shift** turns every knob over (tap to latch, hold for a moment): detune, skirt, key track and velocity on voices; copy, paste, init and fixed/ratio for a voice; hold, time scale and velocity on env; per-voice LFO sensitivity on move. With shift, the first eight white keys pick a voice.
+![Jam mode, wiring page](jam-wiring.png)
+![Jam mode, move page](jam-move.png)
+
+- **rand** rolls the page you are on; **shift + rand** takes the last change back. **lock** keeps the last note sounding so both hands are free for the knobs.
+
+On the sound pages the keyboard plays the whole voice through the browser preview, filter envelope and LFOs included; a knob turned while a note sounds re-strikes it. The preview is an approximation: the FS1R, when linked, is the real sound.
 
 ### Things worth knowing
 
