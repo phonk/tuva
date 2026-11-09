@@ -490,7 +490,7 @@ nav.tabs button,.toolbar>button,.toolbar label,.ctl label,h2,h3,.cl,.legend,.kbd
     <div class="j-piano" id="jPiano"></div>
   </div>
 </div>
-<footer class="wrap credits">Tuva - fs1r formant lab · by Alessandro Bonino and Claude</footer>
+<footer class="wrap credits phonk-links">Tuva - fs1r formant lab · by Alessandro Bonino and Claude · <a href="https://github.com/phonk/tuva">source on github</a> · <a href="https://phonk.github.io/">phonk</a></footer>
 
 <script>
 'use strict';
@@ -1872,6 +1872,7 @@ addEventListener('resize',()=>{sizeCanvases();refresh()});
 showTab(location.hash.slice(1)||store.get('fs1r-tab','bocca'));
 if(store.get('fs1r-kids',false))setKids(true);
 </script>
+<style>.phonk-links a{color:inherit;text-decoration:none;border-bottom:1px solid transparent}.phonk-links a:hover,.phonk-links a:focus-visible{color:var(--amber);border-bottom-color:currentColor;outline:none}</style>
 <script data-goatcounter="https://phonk.goatcounter.com/count"
         async src="//gc.zgo.at/count.js"></script>
 </body>
